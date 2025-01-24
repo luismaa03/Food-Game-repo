@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_food"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_food_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FoodGame"
+        tools:targetApi="31"
+        tools:ignore="DiscouragedApi">
+        <activity
+            android:name=".VerPuntuaciones"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".PuntuacionGeneral"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".ResultadoCuestionario"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".JuegoCuestionario"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".JuegoIngredientes"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleRecetas"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Meriendas"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Almuerzos"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Desayunos"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Categorias"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Home"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".Login"
+            android:screenOrientation="portrait"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+</manifest>

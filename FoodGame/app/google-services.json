@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "937334015250",
+    "project_id": "food-game-84110",
+    "storage_bucket": "food-game-84110.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937334015250:android:ec61ffb806f0686adc9fcb",
+        "android_client_info": {
+          "package_name": "com.example.foodgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937334015250-6l12vodeamn08d6q93ss7r4d2s1i2vtp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.foodgame",
+            "certificate_hash": "3332443849f01bb091019483f7f014eb2e5967b2"
+          }
+        },
+        {
+          "client_id": "937334015250-d8jono16jj4s0n7uahcac7plnh8f04sv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFi0kUJj2vrhEM_LZNrRqDH9ktN0NLlzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937334015250-d8jono16jj4s0n7uahcac7plnh8f04sv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

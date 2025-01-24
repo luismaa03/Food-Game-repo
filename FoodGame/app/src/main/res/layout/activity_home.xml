@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Home">
+
+    <Button
+        android:id="@+id/btCerrarSesion"
+        android:layout_width="211dp"
+        android:layout_height="71dp"
+        android:backgroundTint="@color/md_theme_error"
+        android:text="@string/btCerrarSesion"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btHistorialPuntos"
+        app:layout_constraintVertical_bias="0.483" />
+
+    <Button
+        android:id="@+id/btComenzar"
+        android:layout_width="213dp"
+        android:layout_height="67dp"
+        android:text="@string/btComenzar"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivDesayuno"
+        app:layout_constraintVertical_bias="0.089" />
+
+    <Button
+        android:id="@+id/btHistorialPuntos"
+        style="@style/Widget.Material3.Button.ElevatedButton"
+        android:layout_width="216dp"
+        android:layout_height="76dp"
+        android:backgroundTint="@color/material_dynamic_primary30"
+        android:text="@string/btHistorialPuntos"
+        android:textColor="@color/ic_google_background"
+        android:textSize="20sp"
+        app:icon="@android:drawable/star_big_on"
+        app:iconSize="50dp"
+        app:iconTint="@color/fAmarillo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btComenzar"
+        app:layout_constraintVertical_bias="0.179" />
+
+    <TextView
+        android:id="@+id/tvRecetas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:bufferType="normal"
+        android:text="@string/app_name"
+        android:textAlignment="textStart"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.173" />
+
+    <ImageView
+        android:id="@+id/ivDesayuno"
+        android:layout_width="177dp"
+        android:layout_height="168dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvRecetas"
+        app:layout_constraintVertical_bias="0.122"
+        app:srcCompat="@drawable/comida" />
+
+    <ImageButton
+        android:id="@+id/ibIcono"
+        android:layout_width="75dp"
+        android:layout_height="78dp"
+        android:background="@null"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.047"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/icono"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Food Game</string>
+    <string name="tvIniciarSesion">Iniciar Sesión</string>
+    <string name="edEmail" translatable="false">Email</string>
+    <string name="edContrasena">Contraseña</string>
+    <string name="btRegistrar">Registrar</string>
+    <string name="btLogin" translatable="false">Login</string>
+    <string name="btGoogle">Login con Google</string>
+    <string name="btCerrarSesion">Cerrar Sesión</string>
+    <string name="btComenzar">Comenzar</string>
+    <string name="tvRecetas">Recetas Saludables</string>
+    <string name="btDesayunos">Desayunos</string>
+    <string name="btAlmuerzos">Almuerzos</string>
+    <string name="btMeriendas">Meriendas</string>
+    <string name="your_web_client_id" translatable="false">937334015250-d8jono16jj4s0n7uahcac7plnh8f04sv.apps.googleusercontent.com</string>
+    <string name="btVolver">Volver</string>
+    <string name="btAceptar">Aceptar</string>
+    <string name="btHistorialPuntos">Historial de Puntos</string>
+    <string name="tvPuntos">Puntuación</string>
+</resources>

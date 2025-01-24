@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "937334015250",
+    "project_id": "food-game-84110",
+    "storage_bucket": "food-game-84110.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937334015250:android:ec61ffb806f0686adc9fcb",
+        "android_client_info": {
+          "package_name": "com.example.foodgame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFi0kUJj2vrhEM_LZNrRqDH9ktN0NLlzM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
