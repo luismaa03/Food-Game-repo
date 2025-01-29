@@ -74,8 +74,8 @@ class Almuerzos : AppCompatActivity() {
         }
 
         binding.btAceptarAlm.setOnClickListener {
-            if (adapter.selectedPosition != -1) {
-                val selectedPlato = platos[adapter.selectedPosition]
+            if (adapter.selectedItemPosition != -1) {
+                val selectedPlato = platos[adapter.selectedItemPosition]
                 val intent = Intent(this, JuegoCuestionario::class.java)
                 intent.putExtra("tipoPlato", categoria)
                 intent.putExtra("nombrePlato", selectedPlato.nombre)
@@ -100,7 +100,7 @@ class Almuerzos : AppCompatActivity() {
         imageRef.getFile(localfile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localfile.absolutePath)
             // Actualizar el plato con el bitmap descargado
-            plato.bitmap = bitmap
+            //plato.bitmap = bitmap
             // Notificar al adaptador que los datos han cambiado
             adapter.notifyDataSetChanged()
         }.addOnFailureListener { exception ->
