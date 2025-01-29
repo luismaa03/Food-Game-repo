@@ -80,10 +80,17 @@ class Meriendas : AppCompatActivity() {
             finish()
         }
 
-        // Configura el botón "Aceptar" para abrir la actividad JuegoIngredientes.
+        // Configura el botón "Aceptar" para abrir la actividad JuegoCuestionario.
         binding.btAceptarMer.setOnClickListener {
-            val intent = Intent(this, JuegoIngredientes::class.java)
-            startActivity(intent)
+            if (adapter.selectedPosition != -1) {
+                val selectedPlato = platos[adapter.selectedPosition]
+                val intent = Intent(this, JuegoCuestionario::class.java)
+                intent.putExtra("tipoPlato", categoria)
+                intent.putExtra("nombrePlato", selectedPlato.nombre)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Selecciona un plato", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

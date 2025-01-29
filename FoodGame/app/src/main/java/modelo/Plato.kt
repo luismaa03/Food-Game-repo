@@ -7,6 +7,6 @@ data class Plato(
     val calorias: Double,
     val ingredientes: String,
     val imageName: String = nombre.lowercase(),
-    val pasosPreparacion: String,
+    val receta: String,
     var bitmap: Bitmap? = null // Nueva propiedad para almacenar el Bitmap
 )

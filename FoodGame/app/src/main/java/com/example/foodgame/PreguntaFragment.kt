@@ -23,7 +23,7 @@ class PreguntaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            pregunta = it.getSerializable(ARG_PREGUNTA) as Pregunta
+            pregunta = it.getParcelable(ARG_PREGUNTA)!!
         }
     }
 
@@ -39,18 +39,17 @@ class PreguntaFragment : Fragment() {
         rbOpcion2 = view.findViewById(R.id.rbOpcion2)
         rbOpcion3 = view.findViewById(R.id.rbOpcion3)
 
-        tvPregunta.text = pregunta.texto
+        tvPregunta.text = pregunta.pregunta
 
         if (pregunta.tipo == TipoPregunta.OPCION_MULTIPLE) {
-            rbOpcion1.text = pregunta.opciones[0]
-            rbOpcion2.text = pregunta.opciones[1]
-            rbOpcion3.text = pregunta.opciones[2]
-
-            // Ocultar el tercer botón de opción si solo hay dos opciones
-            if (pregunta.opciones.size == 2) {
-                rbOpcion3.visibility = View.GONE
-            } else {
+            rbOpcion1.text = pregunta.respuestas[0]
+            rbOpcion2.text = pregunta.respuestas[1]
+            // Asegúrate de que haya al menos 3 respuestas antes de intentar acceder a la tercera
+            if (pregunta.respuestas.size > 2) {
+                rbOpcion3.text = pregunta.respuestas[2]
                 rbOpcion3.visibility = View.VISIBLE
+            } else {
+                rbOpcion3.visibility = View.GONE
             }
         } else {
             // ... (lógica para otros tipos de preguntas) ...
@@ -74,7 +73,7 @@ class PreguntaFragment : Fragment() {
         fun newInstance(pregunta: Pregunta): PreguntaFragment {
             val fragment = PreguntaFragment()
             val args = Bundle()
-            args.putSerializable(ARG_PREGUNTA, pregunta)
+            args.putParcelable(ARG_PREGUNTA, pregunta)
             fragment.arguments = args
             return fragment
         }

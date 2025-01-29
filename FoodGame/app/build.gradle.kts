@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -64,4 +65,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation(kotlin("script-runtime"))
+
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0") // O la versión más reciente
+    implementation("com.google.code.gson:gson:2.10.1")
 }
