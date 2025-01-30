@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodgame.DetalleRecetas
-import com.example.foodgame.JuegoCuestionario
 import com.example.foodgame.R
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
@@ -72,12 +71,12 @@ class PlatoAdapter(
             onItemSelectedListener?.invoke(selectedItemPosition) // Notifica a la actividad el cambio
         }
 
-        // Maneja clics largos para mostrar un diálogo de detalles
+        // Maneja clics largos para mostrar el diálogo de confirmación
         holder.itemView.setOnLongClickListener {
             AlertDialog.Builder(holder.itemView.context)
-                .setTitle("Detalle")
-                .setMessage("¿Quieres ver los detalles del plato seleccionado o jugar?")
-                .setPositiveButton("Detalle") { dialog, _ ->
+                .setTitle("Detalle del plato")
+                .setMessage("¿Desea ver los detalles de este plato?")
+                .setPositiveButton("Aceptar") { dialog, _ ->
                     val selectedPlato = platos[position] // Obtiene el plato seleccionado
                     val intent = Intent(holder.itemView.context, DetalleRecetas::class.java)
                     intent.putExtra("selectedPlato", selectedPlato) // Pasa el objeto Plato
@@ -85,16 +84,12 @@ class PlatoAdapter(
                     startActivity(holder.itemView.context, intent, null)
                     dialog.dismiss()
                 }
-                .setNegativeButton("Jugar") { dialog, _ ->
-                    val selectedPlato = platos[position] // Obtiene el plato seleccionado
-                    val intent = Intent(holder.itemView.context, JuegoCuestionario::class.java)
-                    intent.putExtra("selectedPlato", selectedPlato) // Pasa el objeto Plato
-                    startActivity(holder.itemView.context, intent, null)
-                    dialog.dismiss()
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss() // Cierra el diálogo sin hacer nada
                 }
                 .show()
 
-            true
+            true // Indica que el evento ha sido consumido
         }
 
         // Cambia el color de fondo según si el elemento está seleccionado o no
