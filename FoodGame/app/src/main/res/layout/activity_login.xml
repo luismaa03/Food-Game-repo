@@ -10,8 +10,8 @@
 
     <Button
         android:id="@+id/btLogin"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
+        android:layout_width="122dp"
+        android:layout_height="48dp"
         android:text="@string/btLogin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,12 +44,12 @@
 
     <Button
         android:id="@+id/btRegistrar"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
+        android:layout_width="143dp"
+        android:layout_height="47dp"
         android:text="@string/btRegistrar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.14"
+        app:layout_constraintHorizontal_bias="0.175"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edContrasena"
         app:layout_constraintVertical_bias="0.179" />

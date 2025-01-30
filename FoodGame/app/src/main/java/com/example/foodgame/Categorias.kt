@@ -1,6 +1,5 @@
 package com.example.foodgame
 
-import Meriendas
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
