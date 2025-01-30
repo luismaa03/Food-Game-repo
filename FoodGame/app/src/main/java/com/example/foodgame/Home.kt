@@ -59,6 +59,10 @@ class Home : AppCompatActivity() {
             intent.putExtra("puntuaciones", puntuaciones as Serializable)
             startActivity(intent)
         }
+        // Listener del botón "Acerca de"
+        binding.btAcercaDe.setOnClickListener {
+            mostrarDialogoAcercaDe()
+        }
 
         firebaseauth = FirebaseAuth.getInstance()
 
@@ -193,7 +197,7 @@ class Home : AppCompatActivity() {
             imageRef.putFile(image)
         } else {
             val baos = ByteArrayOutputStream()
-            (image as android . graphics . Bitmap).compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            (image as Bitmap).compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
             imageRef.putBytes(data)
         }
@@ -210,8 +214,13 @@ class Home : AppCompatActivity() {
                 if (image is Bitmap) {
                     guardarImagenEnAlmacenamientoInterno(image)
                 } else if (image is Uri) {
-                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, image)
-                    guardarImagenEnAlmacenamientoInterno(bitmap)
+                    try {
+                        val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, image)
+                        guardarImagenEnAlmacenamientoInterno(bitmap)
+                    }
+                    catch (e: IOException) {
+                        Log.e(TAG, "Error al obtener el bitmap de la Uri: ${e.message}")
+                    }
                 }
             }
         }.addOnFailureListener { exception ->
@@ -303,5 +312,18 @@ class Home : AppCompatActivity() {
             }
         }
         return puntuaciones
+    }
+    private fun mostrarDialogoAcercaDe() {
+        val alertDialog = AlertDialog.Builder(this).create()
+        alertDialog.setTitle("Acerca de FoodGame")
+        alertDialog.setMessage(
+            "FoodGame es una aplicación desarrollada para poner a prueba tus conocimientos sobre recetas y gastronomía.\n\n" +
+                    "Desarrollado por: Luis Manuel Exposito y Roberto Honrado\n" +
+                    "Versión: 1.0\n"
+        )
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
     }
 }
