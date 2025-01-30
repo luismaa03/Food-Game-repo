@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -27,6 +28,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import modelo.Puntuacion
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.io.Serializable
 
 class Home : AppCompatActivity() {
@@ -36,19 +40,9 @@ class Home : AppCompatActivity() {
     private var uriImagen: Uri? = null
     private val TAG = "LMEG"
 
-    private var isImageLoaded = false // Variable para controlar la carga de la imagen
     private val storageReference = FirebaseStorage.getInstance().reference
     private val databaseReference = com.google.firebase.database.FirebaseDatabase.getInstance().reference
-
-
-    override fun onStart() { // O onResume()
-        super.onStart()
-
-        if (!isImageLoaded) { // Cargar la imagen solo si no se ha cargado antes
-            cargarImagenDePerfil()
-            isImageLoaded = true
-        }
-    }
+    private val IMAGE_FILE_NAME = "profile_image.jpg" // Nombre del archivo de la imagen en el almacenamiento interno
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,7 +193,7 @@ class Home : AppCompatActivity() {
             imageRef.putFile(image)
         } else {
             val baos = ByteArrayOutputStream()
-            (image as Bitmap).compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            (image as android . graphics . Bitmap).compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
             imageRef.putBytes(data)
         }
@@ -211,6 +205,14 @@ class Home : AppCompatActivity() {
                 // Guardar la URL de la imagen en Firebase Realtime Database
                 val userRef = databaseReference.child("users/${firebaseauth.currentUser?.uid}")
                 userRef.child("profileImageUrl").setValue(imageUrl)
+
+                // Guardar la imagen en el almacenamiento interno
+                if (image is Bitmap) {
+                    guardarImagenEnAlmacenamientoInterno(image)
+                } else if (image is Uri) {
+                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, image)
+                    guardarImagenEnAlmacenamientoInterno(bitmap)
+                }
             }
         }.addOnFailureListener { exception ->
             // Manejar el error de subida
@@ -220,26 +222,73 @@ class Home : AppCompatActivity() {
 
     // Función para cargar la imagen de perfil al iniciar sesión
     private fun cargarImagenDePerfil() {
-        val userRef = databaseReference.child("users/${firebaseauth.currentUser?.uid}")
-        userRef.child("profileImageUrl").addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val imageUrl = snapshot.getValue(String::class.java)
-                if (imageUrl != null) {
-                    Glide.with(this@Home)
-                        .load(imageUrl)
-                        .circleCrop() // O .transform(RoundedCorners(radius)) para bordes redondeados
-                        .into(binding.ibIcono)
-                }
-            }
+        // Intentar cargar la imagen desde el almacenamiento interno
+        val bitmap = cargarImagenDesdeAlmacenamientoInterno()
+        if (bitmap != null) {
+            // Si la imagen está en el almacenamiento interno, cargarla
+            Glide.with(this)
+                .load(bitmap)
+                .circleCrop()
+                .into(binding.ibIcono)
+        } else {
+            // Si no está en el almacenamiento interno, cargarla desde Firebase
+            val userRef = databaseReference.child("users/${firebaseauth.currentUser?.uid}")
+            userRef.child("profileImageUrl").addListenerForSingleValueEvent(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val imageUrl = snapshot.getValue(String::class.java)
+                    if (imageUrl != null) {
+                        Glide.with(this@Home)
+                            .load(imageUrl)
+                            .circleCrop()
+                            .into(binding.ibIcono)
 
-            override fun onCancelled(error: DatabaseError) {
-                // Manejar el error de lectura
-                Log.e(TAG, "Error al cargar la imagen de perfil: ${error.message}")
-            }
-        })
+                        // Descargar la imagen de Firebase y guardarla en el almacenamiento interno
+                        Glide.with(this@Home)
+                            .asBitmap()
+                            .load(imageUrl)
+                            .into(object : com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                                override fun onResourceReady(resource: Bitmap, transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?) {
+                                    guardarImagenEnAlmacenamientoInterno(resource)
+                                }
+
+                                override fun onLoadCleared(placeholder: android.graphics.drawable.Drawable?) {
+                                    // No es necesario hacer nada aquí
+                                }
+                            })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Manejar el error de lectura
+                    Log.e(TAG, "Error al cargar la imagen de perfil: ${error.message}")
+                }
+            })
+        }
     }
 
+    // Función para guardar la imagen en el almacenamiento interno
+    private fun guardarImagenEnAlmacenamientoInterno(bitmap: Bitmap) {
+        val file = File(filesDir, IMAGE_FILE_NAME)
+        try {
+            val stream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException) {
+            Log.e(TAG, "Error al guardar la imagen en el almacenamiento interno: ${e.message}")
+        }
+    }
+
+    // Función para cargar la imagen desde el almacenamiento interno
+    private fun cargarImagenDesdeAlmacenamientoInterno(): Bitmap? {
+        val file = File(filesDir, IMAGE_FILE_NAME)
+        return if (file.exists()) {
+            BitmapFactory.decodeFile(file.absolutePath)
+        } else {
+            null
+        }
+    }
 
     // Función para obtener las puntuaciones almacenadas
     private fun obtenerPuntuacionesAlmacenadas(): List<Puntuacion> {
