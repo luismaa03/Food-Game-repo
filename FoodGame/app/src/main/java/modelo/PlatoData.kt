@@ -1,7 +1,5 @@
 package modelo
 
-import android.graphics.Bitmap
-import modelo.Plato
 
 object PlatoData {
     private val platosDesayunos = mutableListOf(

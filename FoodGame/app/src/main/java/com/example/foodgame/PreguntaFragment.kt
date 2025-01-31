@@ -5,77 +5,97 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.foodgame.databinding.FragmentPreguntaBinding
 import modelo.Pregunta
 import modelo.TipoPregunta
 
 class PreguntaFragment : Fragment() {
 
+    private var _binding: FragmentPreguntaBinding? = null
+    private val binding get() = _binding!!
     private lateinit var pregunta: Pregunta
-    private lateinit var tvPregunta: TextView
-    private lateinit var rgOpciones: RadioGroup
-    private lateinit var rbOpcion1: RadioButton
-    private lateinit var rbOpcion2: RadioButton
-    private lateinit var rbOpcion3: RadioButton
+    private var position: Int = 0
+    private var listener: RespuestaSeleccionadaListener? = null
+
+    interface RespuestaSeleccionadaListener {
+        fun onRespuestaSeleccionada(respuesta: String, position: Int)
+    }
+
+    companion object {
+        private const val ARG_PREGUNTA = "pregunta"
+        private const val ARG_POSITION = "position"
+
+        fun newInstance(pregunta: Pregunta, position: Int): PreguntaFragment {
+            val fragment = PreguntaFragment()
+            val args = Bundle()
+            args.putParcelable(ARG_PREGUNTA, pregunta)
+            args.putInt(ARG_POSITION, position)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             pregunta = it.getParcelable(ARG_PREGUNTA)!!
+            position = it.getInt(ARG_POSITION)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_pregunta, container, false)
+    ): View {
+        _binding = FragmentPreguntaBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        tvPregunta = view.findViewById(R.id.tvPregunta)
-        rgOpciones = view.findViewById(R.id.rgOpciones)
-        rbOpcion1 = view.findViewById(R.id.rbOpcion1)
-        rbOpcion2 = view.findViewById(R.id.rbOpcion2)
-        rbOpcion3 = view.findViewById(R.id.rbOpcion3)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        tvPregunta.text = pregunta.pregunta
+        binding.apply {
+            tvPregunta.text = pregunta.pregunta
+            rgOpciones.removeAllViews() // Limpiar RadioGroup
 
-        if (pregunta.tipo == TipoPregunta.OPCION_MULTIPLE) {
-            rbOpcion1.text = pregunta.respuestas[0]
-            rbOpcion2.text = pregunta.respuestas[1]
-            // Asegúrate de que haya al menos 3 respuestas antes de intentar acceder a la tercera
-            if (pregunta.respuestas.size > 2) {
-                rbOpcion3.text = pregunta.respuestas[2]
-                rbOpcion3.visibility = View.VISIBLE
-            } else {
-                rbOpcion3.visibility = View.GONE
+            when (pregunta.tipo) {
+                TipoPregunta.OPCION_MULTIPLE -> {
+                    pregunta.respuestas.forEach { respuesta ->
+                        val radioButton = RadioButton(context)
+                        radioButton.text = respuesta
+                        rgOpciones.addView(radioButton)
+                    }
+                }
+                TipoPregunta.VERDADERO_FALSO -> {
+                    val rbVerdadero = RadioButton(context)
+                    rbVerdadero.text = "Verdadero"
+                    rgOpciones.addView(rbVerdadero)
+
+                    val rbFalso = RadioButton(context)
+                    rbFalso.text = "Falso"
+                    rgOpciones.addView(rbFalso)
+                }
             }
-        } else {
-            // ... (lógica para otros tipos de preguntas) ...
-        }
-
-        return view
-    }
-
-    fun obtenerRespuestaSeleccionada(): Int {
-        return when (rgOpciones.checkedRadioButtonId) {
-            rbOpcion1.id -> 0
-            rbOpcion2.id -> 1
-            rbOpcion3.id -> 2
-            else -> -1
+            rgOpciones.setOnCheckedChangeListener { _, _ ->
+                val respuestaSeleccionada = when (binding.rgOpciones.checkedRadioButtonId) {
+                    -1 -> "" // Ninguna opción seleccionada
+                    else -> {
+                        val radioButton = binding.rgOpciones.findViewById<RadioButton>(binding.rgOpciones.checkedRadioButtonId)
+                        radioButton?.text.toString()
+                    }
+                }
+                listener?.onRespuestaSeleccionada(respuestaSeleccionada, position)
+            }
         }
     }
 
-    companion object {
-        private const val ARG_PREGUNTA = "pregunta"
+    fun setRespuestaSeleccionadaListener(listener: RespuestaSeleccionadaListener) {
+        this.listener = listener
+    }
 
-        fun newInstance(pregunta: Pregunta): PreguntaFragment {
-            val fragment = PreguntaFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_PREGUNTA, pregunta)
-            fragment.arguments = args
-            return fragment
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

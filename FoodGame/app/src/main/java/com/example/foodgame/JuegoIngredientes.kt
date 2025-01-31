@@ -50,7 +50,7 @@ class JuegoIngredientes : AppCompatActivity() {
 
         // Botón para navegar a la siguiente actividad
         binding.ibFlecha.setOnClickListener {
-            val intent = Intent(this, JuegoCuestionario::class.java)
+            val intent = Intent(this, ResultadoCuestionario::class.java)
             startActivity(intent)
         }
 

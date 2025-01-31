@@ -9,7 +9,6 @@ data class Plato(
     val ingredientes: String,
     val imageName: String,
     val descripcion: String,
-    //var bitmap: Bitmap? = null, // Eliminamos esta línea
     var preguntas: List<Pregunta> = emptyList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -18,7 +17,6 @@ data class Plato(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        //parcel.readParcelable(Bitmap::class.java.classLoader), // Eliminamos esta línea
         parcel.createTypedArrayList(Pregunta) ?: emptyList()
     )
 
@@ -28,7 +26,6 @@ data class Plato(
         parcel.writeString(ingredientes)
         parcel.writeString(imageName)
         parcel.writeString(descripcion)
-        //parcel.writeParcelable(bitmap, flags) // Eliminamos esta línea
         parcel.writeTypedList(preguntas)
     }
 
