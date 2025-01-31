@@ -44,8 +44,7 @@ class DetalleRecetas : AppCompatActivity() {
             Nombre: ${selectedPlato.nombre}
             Calorías: ${selectedPlato.calorias}
             Ingredientes: ${selectedPlato.ingredientes}
-            Pasos de preparación:
-            ${selectedPlato.descripcion}
+            Pasos de preparación: ${selectedPlato.descripcion}
             """.trimIndent()
             binding.mlRecetas.setText(platoDetails)
 
