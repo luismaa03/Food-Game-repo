@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
 }
 
@@ -64,8 +64,10 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
-    implementation(kotlin("script-runtime"))
 
-    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0") // O la versión más reciente
+    implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     implementation("com.google.code.gson:gson:2.10.1")
+
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
 }
