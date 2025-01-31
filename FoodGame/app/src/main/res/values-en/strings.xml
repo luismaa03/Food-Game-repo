@@ -15,4 +15,5 @@
     <string name="btAceptar">Accept</string>
     <string name="btHistorialPuntos">Point History</string>
     <string name="tvPuntos">Points</string>
+    <string name="btAcercaDe">About</string>
 </resources>

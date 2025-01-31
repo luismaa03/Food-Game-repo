@@ -2,9 +2,6 @@ package com.example.foodgame
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.widget.LinearLayout
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,7 +10,6 @@ import com.example.foodgame.databinding.ActivityDetalleRecetasBinding
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import modelo.Plato
-import modelo.Pregunta
 import java.io.File
 
 class DetalleRecetas : AppCompatActivity() {
@@ -46,15 +42,12 @@ class DetalleRecetas : AppCompatActivity() {
             Ingredientes: ${selectedPlato.ingredientes}
             Pasos de preparación: ${selectedPlato.descripcion}
             """.trimIndent()
-            binding.mlRecetas.setText(platoDetails)
+            binding.mlRecetas.text = platoDetails
 
             // Cargar la imagen desde Firebase Storage
             val imageName = selectedPlato.imageName
             val imageRef = storageRef.child("$categoria/$imageName.jpg")
             descargarImagen(imageRef)
-
-            // Muestra las preguntas
-            mostrarPreguntas(selectedPlato.preguntas)
         }
 
         binding.btVolver.setOnClickListener {
@@ -71,33 +64,6 @@ class DetalleRecetas : AppCompatActivity() {
             binding.ivPlatoDetalle.setImageBitmap(bitmap)
         }.addOnFailureListener {
             // Manejar el error
-        }
-    }
-
-    private fun mostrarPreguntas(preguntas: List<Pregunta>) {
-        val layoutPreguntas = binding.layoutPreguntas // LinearLayout donde se mostrarán las preguntas
-
-        // Limpiar el layout antes de añadir nuevas preguntas
-        layoutPreguntas.removeAllViews()
-
-        for (pregunta in preguntas) {
-            // Crear un TextView para la pregunta
-            val textViewPregunta = android.widget.TextView(this)
-            textViewPregunta.text = pregunta.pregunta
-            textViewPregunta.textSize = 18f
-            layoutPreguntas.addView(textViewPregunta)
-
-            // Crear un RadioGroup para las opciones
-            val radioGroup = RadioGroup(this)
-            radioGroup.orientation = LinearLayout.VERTICAL
-
-            for (opcion in pregunta.respuestas) {
-                val radioButton = RadioButton(this)
-                radioButton.text = opcion
-                radioGroup.addView(radioButton)
-            }
-
-            layoutPreguntas.addView(radioGroup)
         }
     }
 }
