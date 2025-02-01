@@ -45,18 +45,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rvIngredientes" />
 
-    <ImageButton
-        android:id="@+id/ibFlecha"
-        android:layout_width="70dp"
-        android:layout_height="62dp"
-        android:background="@null"
-        android:padding="0dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btVerificar"
-        app:layout_constraintTop_toBottomOf="@+id/rvIngredientes"
-        app:srcCompat="@drawable/flecha2"
-        android:visibility="gone" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

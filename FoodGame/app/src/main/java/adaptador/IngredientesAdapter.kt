@@ -8,14 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodgame.FirebaseUtils
-import com.example.foodgame.JuegoIngredientes
 import com.example.foodgame.R
 import modelo.Ingrediente
 
 class IngredientesAdapter(
     private val ingredientes: List<Ingrediente>,
     private val ingredientesSeleccionados: MutableList<Ingrediente>,
-    private val onIngredienteClick: (Ingrediente) -> Unit
+    private val onIngredienteClick: (Ingrediente) -> Unit,
+    private val onIngredienteLongClick: (Ingrediente) -> Unit // Añadimos el long click listener
 ) : RecyclerView.Adapter<IngredientesAdapter.IngredienteViewHolder>() {
 
     class IngredienteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -47,7 +47,7 @@ class IngredientesAdapter(
         }
 
         holder.itemView.setOnLongClickListener {
-            (holder.itemView.context as? JuegoIngredientes)?.mostrarInformacionNutricional(ingrediente.nombre)
+            onIngredienteLongClick(ingrediente)
             true
         }
     }
