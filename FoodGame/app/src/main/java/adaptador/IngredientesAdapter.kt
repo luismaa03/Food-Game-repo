@@ -1,5 +1,6 @@
 package adaptador
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodgame.FirebaseUtils
 import com.example.foodgame.JuegoIngredientes
 import com.example.foodgame.R
+import modelo.Ingrediente
 
 class IngredientesAdapter(
-    private val ingredientes: List<String>,
-    private val ingredientesSeleccionados: MutableList<String>,
-    private val onIngredienteClick: (String) -> Unit
+    private val ingredientes: List<Ingrediente>,
+    private val ingredientesSeleccionados: MutableList<Ingrediente>,
+    private val onIngredienteClick: (Ingrediente) -> Unit
 ) : RecyclerView.Adapter<IngredientesAdapter.IngredienteViewHolder>() {
 
     class IngredienteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,13 +30,10 @@ class IngredientesAdapter(
 
     override fun onBindViewHolder(holder: IngredienteViewHolder, position: Int) {
         val ingrediente = ingredientes[position]
-        holder.tvNombreIngrediente.text = ingrediente
+        holder.tvNombreIngrediente.text = ingrediente.nombre
 
-        FirebaseUtils.obtenerMetadatosImagenDesdeBaseDeDatos(ingrediente) { metadatos ->
-            if (metadatos != null) {
-                FirebaseUtils.cargarImagen(metadatos.urlImagen, holder.ivIngrediente)
-            }
-        }
+        Log.d("IngredientesAdapter", "Cargando imagen para ${ingrediente.nombre}")
+        FirebaseUtils.cargarImagen(ingrediente.id, holder.ivIngrediente)
 
         // Marcar/Desmarcar ingrediente
         if (ingredientesSeleccionados.contains(ingrediente)) {
@@ -48,7 +47,7 @@ class IngredientesAdapter(
         }
 
         holder.itemView.setOnLongClickListener {
-            (holder.itemView.context as? JuegoIngredientes)?.mostrarInformacionNutricional(ingrediente)
+            (holder.itemView.context as? JuegoIngredientes)?.mostrarInformacionNutricional(ingrediente.nombre)
             true
         }
     }

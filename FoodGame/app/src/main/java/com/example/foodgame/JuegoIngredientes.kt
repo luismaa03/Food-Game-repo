@@ -3,13 +3,14 @@ package com.example.foodgame
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.foodgame.databinding.ActivityJuegoIngredientesBinding
 import modelo.Ingrediente
 import modelo.Plato
 import modelo.PlatoData
 import adaptador.IngredientesAdapter
-import androidx.recyclerview.widget.GridLayoutManager
+import android.content.Intent
+import java.util.UUID
 
 class JuegoIngredientes : AppCompatActivity() {
 
@@ -17,8 +18,8 @@ class JuegoIngredientes : AppCompatActivity() {
     private lateinit var ingredientesAdapter: IngredientesAdapter
     private lateinit var plato: Plato
     private var ingredientesCorrectos: List<Ingrediente> = emptyList()
-    private var ingredientesMezclados: List<String> = emptyList()
-    private var ingredientesSeleccionados: MutableList<String> = mutableListOf()
+    private var ingredientesMezclados: List<Ingrediente> = emptyList()
+    private var ingredientesSeleccionados: MutableList<Ingrediente> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class JuegoIngredientes : AppCompatActivity() {
         plato = intent.getParcelableExtra("plato")!!
 
         ingredientesCorrectos = obtenerIngredientesCorrectos(plato)
-        ingredientesMezclados = obtenerNombresIngredientesMezclados(plato)
+        ingredientesMezclados = obtenerIngredientesMezclados(plato)
 
         ingredientesAdapter = IngredientesAdapter(ingredientesMezclados, ingredientesSeleccionados) { ingrediente ->
             onIngredienteClick(ingrediente)
@@ -40,45 +41,54 @@ class JuegoIngredientes : AppCompatActivity() {
             adapter = ingredientesAdapter
         }
 
-        binding.btVerificar.setOnClickListener {
-            verificarIngredientes()
+        binding.btVerificar.setOnClickListener {verificarIngredientes()
         }
     }
-
 
     private fun obtenerIngredientesCorrectos(plato: Plato): List<Ingrediente> {
-        val ingredientes = PlatoData.getPlatoIngredientes(plato.nombre).toMutableList()
-
-        // Fetch image URLs for each ingredient
-        ingredientes.forEach { ingrediente ->
-            FirebaseUtils.obtenerMetadatosImagenDesdeBaseDeDatos(ingrediente.nombre) { imageMetadata ->
-                ingrediente.imageUrl = imageMetadata?.urlImagen
-                // Notify the adapter that the data has changed
-                runOnUiThread {
-                    ingredientesAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-        return ingredientes
+        // Simplemente obtenemos la lista de ingredientes sin intentar obtener URLs
+        return PlatoData.getPlatoIngredientes(plato.nombre)
     }
 
-    private fun obtenerNombresIngredientesMezclados(plato: Plato): List<String> {
-        val ingredientesCorrectos = obtenerIngredientesCorrectos(plato).map { it.nombre }
+    private fun obtenerIngredientesMezclados(plato: Plato): List<Ingrediente> {
+        val ingredientesCorrectos = obtenerIngredientesCorrectos(plato)
         val ingredientesIncorrectos = obtenerIngredientesIncorrectos()
         val ingredientesMezclados = (ingredientesCorrectos + ingredientesIncorrectos).shuffled()
         return ingredientesMezclados
     }
 
-    private fun obtenerIngredientesIncorrectos(): List<String> {
+    private fun obtenerIngredientesIncorrectos(): List<Ingrediente> {
         val ingredientesIncorrectos = listOf(
-            "Jamón", "Queso", "Atún", "Lentejas", "Brócoli", "Pimiento", "Yogur", "Granola",
-            "Mantequilla", "Cereales", "Nueces", "Miel", "Chocolate", "Café", "Zumo", "Refresco",
-            "Pollo", "Patatas", "Cebolla", "Ajo", "Tofu", "Zanahoria", "Pasta", "Lechuga"
+            Ingrediente("jamon", "Jamón", "50g", "Proteínas, vitaminas del grupo B"),
+            Ingrediente("queso", "Queso", "50g", "Proteínas, calcio, vitaminas A y D"),
+            Ingrediente("atun", "Atún", "80g", "Proteínas, omega-3"),
+            Ingrediente("lentejas", "Lentejas", "150g", "Proteínas, hierro, fibra"),
+            Ingrediente("brocoli", "Brócoli", "100g", "Vitaminas C y K, fibra"),
+            Ingrediente("pimiento", "Pimiento", "1/2", "Vitaminas C y A, antioxidantes"),
+            Ingrediente("yogur", "Yogur", "150g", "Proteínas, calcio, probióticos"),
+            Ingrediente("granola", "Granola", "2 cucharadas", "Fibra, carbohidratos"),
+            Ingrediente("mantequilla", "Mantequilla", "1 cucharada", "Grasas, vitaminas A y D"),
+            Ingrediente("cerelas", "Cereales", "30g", "Carbohidratos, fibra"),
+            Ingrediente("nueces", "Nueces", "30g", "Grasas saludables, proteínas"),
+            Ingrediente("miel", "Miel", "1 cucharada", "Azúcares, antioxidantes"),
+            Ingrediente("chocolate", "Chocolate", "30g", "Antioxidantes, azúcares"),
+            Ingrediente("cafe", "Café", "1 taza", "Antioxidantes, cafeína"),
+            Ingrediente("zumo", "Zumo", "200ml", "Vitaminas, azúcares"),
+            Ingrediente("refresco", "Refresco", "330ml", "Azúcares, sodio"),
+            Ingrediente("pollo", "Pollo", "1 pechuga", "Proteínas, vitaminas del grupo B"),
+            Ingrediente("patatas", "Patatas", "2", "Carbohidratos, potasio, vitamina C"),
+            Ingrediente("cebolla", "Cebolla", "1/2", "Antioxidantes, vitaminas C y B6"),
+            Ingrediente("ajo", "Ajo", "2 dientes", "Antioxidantes"),
+            Ingrediente("tofu", "Tofu", "200g", "Proteínas, calcio, hierro"),
+            Ingrediente("zanahoria", "Zanahoria", "1", "Vitamina A, fibra"),
+            Ingrediente("pasta", "Pasta", "100g", "Carbohidratos"),
+            Ingrediente("lechuga", "Lechuga", "50g", "Vitaminas A y K, fibra")
         )
         return ingredientesIncorrectos.shuffled().take(4)
-    }
 
-    private fun onIngredienteClick(ingrediente: String) {
+}
+
+    private fun onIngredienteClick(ingrediente: Ingrediente) {
         if (ingredientesSeleccionados.contains(ingrediente)) {
             ingredientesSeleccionados.remove(ingrediente)
         } else {
@@ -113,7 +123,7 @@ class JuegoIngredientes : AppCompatActivity() {
             "Pasta" -> "Calorías: 131 kcal por 100 g (cocida)\nCarbohidratos: 25 g\nProteínas: 5 g\nGrasas: 1 g\nFuente de energía."
             "Atún" -> "Calorías: 130 kcal por 100 g\nProteínas: 29 g\nGrasas: 2 g\nÁcidos grasos: Omega-3"
             "Lechuga" -> "Calorías: 15 kcal por 100 g\nCarbohidratos: 2.9 g\nProteínas: 1.4 g\nFibra: 1.3 g\nVitaminas: A, K"
-            "Pollo" -> "Calorías: 165 kcal por 100 g (pechuga)\nProteínas: 31 g\nGrasas: 3.6 g\nVitaminas: B3, B6\nMinerales: Fósforo"
+            "Pollo" -> "Calorías: 165 kcal por 100 g (pechuga)\nProteínas: 31 g\nGrasas: 3.6 g\nVitaminas:B3, B6\nMinerales: Fósforo"
             "Patatas" -> "Calorías: 77 kcal por 100 g\nCarbohidratos: 17 g\nProteínas: 2 g\nFibra: 2.2 g\nVitaminas: C, B6\nMinerales: Potasio"
             "Cebolla" -> "Calorías: 40 kcal por 100 g\nCarbohidratos: 9 g\nProteínas: 1.1 g\nFibra: 1.7 g\nVitaminas: C, B6\nAntioxidantes: Quercetina"
             "Ajo" -> "Calorías: 149 kcal por 100 g\nCarbohidratos: 33 g\nProteínas: 6.4 g\nFibra: 2.1 g\nAntioxidantes: Allicina"
@@ -133,10 +143,14 @@ class JuegoIngredientes : AppCompatActivity() {
 
     private fun verificarIngredientes() {
         val ingredientesCorrectosNombres = ingredientesCorrectos.map { it.nombre }
-        val sonCorrectos = ingredientesSeleccionados.sorted() == ingredientesCorrectosNombres.sorted()
+        val ingredientesSeleccionadosNombres = ingredientesSeleccionados.map { it.nombre }
+        val sonCorrectos = ingredientesSeleccionadosNombres.sorted() == ingredientesCorrectosNombres.sorted()
 
         if (sonCorrectos) {
             Toast.makeText(this, "¡Correcto!", Toast.LENGTH_SHORT).show()
+            // Navegar a PuntuacionGeneral
+            val intent = Intent(this, PuntuacionGeneral::class.java)
+            startActivity(intent)
         } else {
             Toast.makeText(this, "Incorrecto", Toast.LENGTH_SHORT).show()
         }

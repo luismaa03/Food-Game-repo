@@ -4,23 +4,23 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Ingrediente(
+    val id: String,
     val nombre: String,
     val cantidad: String,
-    val informacionNutricional: String,
-    var imageUrl: String? = null
+    val informacionNutricional: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() // Read imageUrl
+        parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(nombre)
         parcel.writeString(cantidad)
         parcel.writeString(informacionNutricional)
-        parcel.writeString(imageUrl)
     }
 
     override fun describeContents(): Int {
