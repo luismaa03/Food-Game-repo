@@ -70,4 +70,6 @@ dependencies {
 
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 }
