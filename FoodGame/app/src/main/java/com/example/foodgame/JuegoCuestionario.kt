@@ -3,6 +3,7 @@ package com.example.foodgame
 import adaptador.PreguntaPagerAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -20,7 +21,6 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
     private lateinit var preguntas: List<Pregunta>
     private var correctas = 0
     private val respuestas = mutableMapOf<Int, String>()
-    private var respuestasDadas = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,48 +29,60 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
 
         val selectedPlato = intent.getParcelableExtra<Plato>("selectedPlato")
         preguntas = selectedPlato?.preguntas ?: emptyList()
+        Toast.makeText(this, "Número de preguntas: ${preguntas.size}", Toast.LENGTH_SHORT).show()
 
-        // Inicializar viewPager y btEnviar
+        // Inicializar ViewPager2 y botón Enviar
         viewPager = binding.viewPager
         btEnviar = binding.btEnviar
-        //btEnviar.visibility = View.GONE // Ocultar el botón inicialmente
 
-        viewPager.adapter = PreguntaPagerAdapter(this, preguntas)
+        // El botón siempre es visible, pero empieza deshabilitado
+        btEnviar.isEnabled = false
+        btEnviar.visibility = View.VISIBLE
 
-        // Establecer el listener en cada fragmento
-        for (i in 0 until preguntas.size) {
-            val fragment = supportFragmentManager.findFragmentByTag("f$i") as? PreguntaFragment
-            fragment?.setRespuestaSeleccionadaListener(this)
-        }
+        // Configurar ViewPager2 y su adaptador
+        viewPager.adapter = PreguntaPagerAdapter(this, preguntas, this)
+        viewPager.offscreenPageLimit = preguntas.size // Evita que se destruyan los fragmentos
 
+        // Configurar el botón enviar
         btEnviar.setOnClickListener {
             onAllQuestionsAnswered()
             val intent = Intent(this, JuegoIngredientes::class.java)
-            intent.putExtra("selectedPlato", selectedPlato)
+            intent.putExtra("selectedPlato", selectedPlato) // Pasa el objeto Plato
             startActivity(intent)
         }
     }
 
     override fun onRespuestaSeleccionada(respuesta: String, position: Int) {
-        if (!respuestas.containsKey(position)) {
-            respuestasDadas++
-        }
-        respuestas[position] = respuesta
+        Log.d("JuegoCuestionario", "Respuesta seleccionada en posición: $position - $respuesta")
 
-        // Comprobar si todas las preguntas están respondidas
-        btEnviar.visibility = if (respuestasDadas == preguntas.size) {
-            View.VISIBLE
+        // Guardar o eliminar la respuesta
+        if (respuesta.isNotEmpty()) {
+            respuestas[position] = respuesta
         } else {
-            View.GONE
+            respuestas.remove(position)
+        }
+
+        Log.d("JuegoCuestionario", "Total de respuestas registradas: ${respuestas.size} de ${preguntas.size}")
+
+        // Verificar si todas las preguntas han sido respondidas
+        actualizarBotonEnviar()
+    }
+
+    private fun actualizarBotonEnviar() {
+        runOnUiThread {
+            val todasRespondidas = respuestas.size == preguntas.size
+            btEnviar.isEnabled = todasRespondidas
+            Log.d("JuegoCuestionario", "Botón enviar habilitado: ${btEnviar.isEnabled}")
         }
     }
 
     private fun verificarRespuestas() {
-        if (respuestasDadas != preguntas.size) {
+        if (respuestas.size != preguntas.size) {
             Toast.makeText(this, "Debes responder a todas las preguntas", Toast.LENGTH_SHORT).show()
             return
         }
 
+        correctas = 0 // Reiniciar el contador de respuestas correctas
         for ((position, respuestaSeleccionada) in respuestas) {
             val pregunta = preguntas[position]
             if (respuestaSeleccionada == pregunta.respuestaCorrecta) {
@@ -81,12 +93,12 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
         finish()
     }
 
-    fun incrementarPuntuacion() {
+    private fun incrementarPuntuacion() {
         correctas++
     }
 
-    fun onAllQuestionsAnswered() {
-        if (respuestasDadas == preguntas.size) {
+    private fun onAllQuestionsAnswered() {
+        if (respuestas.size == preguntas.size) {
             verificarRespuestas()
         }
     }

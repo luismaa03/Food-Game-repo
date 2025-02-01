@@ -17,6 +17,8 @@ class PreguntaFragment : Fragment() {
     private lateinit var pregunta: Pregunta
     private var position: Int = 0
     private var listener: RespuestaSeleccionadaListener? = null
+    private var respuestaSeleccionada: String = ""
+    private var isAnswered: Boolean = false
 
     interface RespuestaSeleccionadaListener {
         fun onRespuestaSeleccionada(respuesta: String, position: Int)
@@ -77,15 +79,18 @@ class PreguntaFragment : Fragment() {
                     rgOpciones.addView(rbFalso)
                 }
             }
-            rgOpciones.setOnCheckedChangeListener { _, _ ->
-                val respuestaSeleccionada = when (binding.rgOpciones.checkedRadioButtonId) {
-                    -1 -> "" // Ninguna opción seleccionada
-                    else -> {
-                        val radioButton = binding.rgOpciones.findViewById<RadioButton>(binding.rgOpciones.checkedRadioButtonId)
-                        radioButton?.text.toString()
+            rgOpciones.setOnCheckedChangeListener { _, checkedId ->
+                if (checkedId == -1) {
+                    if (isAnswered) {
+                        listener?.onRespuestaSeleccionada("", position)
+                        isAnswered = false
                     }
+                } else {
+                    val radioButton = binding.rgOpciones.findViewById<RadioButton>(checkedId)
+                    respuestaSeleccionada = radioButton?.text.toString()
+                    listener?.onRespuestaSeleccionada(respuestaSeleccionada, position)
+                    isAnswered = true
                 }
-                listener?.onRespuestaSeleccionada(respuestaSeleccionada, position)
             }
         }
     }

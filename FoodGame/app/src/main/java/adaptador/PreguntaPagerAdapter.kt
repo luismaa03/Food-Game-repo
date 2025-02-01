@@ -8,12 +8,15 @@ import modelo.Pregunta
 
 class PreguntaPagerAdapter(
     fragmentActivity: FragmentActivity,
-    private val preguntas: List<Pregunta>
+    private val preguntas: List<Pregunta>,
+    private val listener: PreguntaFragment.RespuestaSeleccionadaListener
 ) : FragmentStateAdapter(fragmentActivity) {
 
     override fun getItemCount(): Int = preguntas.size
 
     override fun createFragment(position: Int): Fragment {
-        return PreguntaFragment.newInstance(preguntas[position], position)
+        val fragment = PreguntaFragment.newInstance(preguntas[position], position)
+        fragment.setRespuestaSeleccionadaListener(listener)
+        return fragment
     }
 }
