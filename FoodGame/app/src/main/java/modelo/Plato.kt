@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.example.foodgame.R
 
-
 data class Plato(
     val nombre: String,
     val calorias: Double,

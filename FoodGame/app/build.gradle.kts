@@ -72,4 +72,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
 
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+    implementation("com.squareup.picasso:picasso:2.8")
 }

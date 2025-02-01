@@ -48,7 +48,7 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
         btEnviar.setOnClickListener {
             onAllQuestionsAnswered()
             val intent = Intent(this, JuegoIngredientes::class.java)
-            intent.putExtra("selectedPlato", selectedPlato) // Pasa el objeto Plato
+            intent.putExtra("plato", selectedPlato) // Pasa el objeto Plato
             startActivity(intent)
         }
     }

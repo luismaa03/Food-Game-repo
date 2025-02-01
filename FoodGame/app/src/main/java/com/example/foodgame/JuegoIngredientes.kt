@@ -1,157 +1,99 @@
 package com.example.foodgame
 
-import adaptador.IngredientesAdapter
-import android.content.Intent
 import android.os.Bundle
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodgame.databinding.ActivityJuegoIngredientesBinding
 import modelo.Ingrediente
 import modelo.Plato
 import modelo.PlatoData
+import adaptador.IngredientesAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 
 class JuegoIngredientes : AppCompatActivity() {
 
     private lateinit var binding: ActivityJuegoIngredientesBinding
-    private lateinit var ingredientesReceta: List<Ingrediente>
-    private lateinit var ingredientesMostrados: MutableList<String>
-    private val ingredientesSeleccionados = mutableListOf<String>()
-    private lateinit var gestureDetector: GestureDetector
-    private lateinit var btVerificar: View
-    private lateinit var selectedPlato: Plato
+    private lateinit var ingredientesAdapter: IngredientesAdapter
+    private lateinit var plato: Plato
+    private var ingredientesCorrectos: List<Ingrediente> = emptyList()
+    private var ingredientesMezclados: List<String> = emptyList()
+    private var ingredientesSeleccionados: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJuegoIngredientesBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        btVerificar = binding.btVerificar
 
-        // Recibir el plato seleccionado del intent
-        selectedPlato = intent.getParcelableExtra("selectedPlato")!!
+        plato = intent.getParcelableExtra("plato")!!
 
-        // Obtener los ingredientes correctos para el plato seleccionado
-        ingredientesReceta = obtenerIngredientesCorrectos(selectedPlato)
+        ingredientesCorrectos = obtenerIngredientesCorrectos(plato)
+        ingredientesMezclados = obtenerNombresIngredientesMezclados(plato)
 
-        // Configuración del RecyclerView de ingredientes
-        ingredientesMostrados = obtenerNombresIngredientesMezclados(ingredientesReceta)
-        val adapter = IngredientesAdapter(ingredientesMostrados, this::onIngredienteClick)
-        binding.rvIngredientes.adapter = adapter
-        binding.rvIngredientes.layoutManager = GridLayoutManager(this, 3)
+        ingredientesAdapter = IngredientesAdapter(ingredientesMezclados, ingredientesSeleccionados) { ingrediente ->
+            onIngredienteClick(ingrediente)
+        }
 
-        // Configuración del botón verificar
-        btVerificar.setOnClickListener {
+        binding.rvIngredientes.apply {
+            // Usar GridLayoutManager con 2 columnas
+            layoutManager = GridLayoutManager(this@JuegoIngredientes, 2)
+            adapter = ingredientesAdapter
+        }
+
+        binding.btVerificar.setOnClickListener {
             verificarIngredientes()
         }
+    }
 
-        // Configuración del botón de flecha
-        binding.ibFlecha.setOnClickListener {
-            val intent = Intent(this, ResultadoCuestionario::class.java)
-            startActivity(intent)
-        }
 
-        // Configuración del detector de gestos
-        gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onLongPress(e: MotionEvent) {
-                val child = binding.rvIngredientes.findChildViewUnder(e.x, e.y)
-                if (child != null) {
-                    val position = binding.rvIngredientes.getChildAdapterPosition(child)
-                    val ingrediente = ingredientesMostrados[position]
-                    mostrarInformacionNutricional(ingrediente)
+    private fun obtenerIngredientesCorrectos(plato: Plato): List<Ingrediente> {
+        val ingredientes = PlatoData.getPlatoIngredientes(plato.nombre).toMutableList()
+
+        // Fetch image URLs for each ingredient
+        ingredientes.forEach { ingrediente ->
+            FirebaseUtils.obtenerMetadatosImagenDesdeBaseDeDatos(ingrediente.nombre) { imageMetadata ->
+                ingrediente.imageUrl = imageMetadata?.urlImagen
+                // Notify the adapter that the data has changed
+                runOnUiThread {
+                    ingredientesAdapter.notifyDataSetChanged()
                 }
             }
-        })
-
-        binding.rvIngredientes.addOnItemTouchListener(object :
-            RecyclerView.OnItemTouchListener {
-            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                gestureDetector.onTouchEvent(e)
-                return false
-            }
-
-            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-        })
+        }
+        return ingredientes
     }
 
-    // Función para obtener los ingredientes correctos para un plato específico
-    private fun obtenerIngredientesCorrectos(plato: Plato): List<Ingrediente> {
-        // Usar la lista de ingredientes del plato directamente desde PlatoData
-        return PlatoData.getPlatoIngredientes(plato.nombre)
+    private fun obtenerNombresIngredientesMezclados(plato: Plato): List<String> {
+        val ingredientesCorrectos = obtenerIngredientesCorrectos(plato).map { it.nombre }
+        val ingredientesIncorrectos = obtenerIngredientesIncorrectos()
+        val ingredientesMezclados = (ingredientesCorrectos + ingredientesIncorrectos).shuffled()
+        return ingredientesMezclados
     }
 
-    private fun obtenerNombresIngredientesMezclados(ingredientesCorrectos: List<Ingrediente>): MutableList<String> {
-        val nombresIngredientes = ingredientesCorrectos.map { it.nombre }.toMutableList()
-        // Añadir ingredientes incorrectos relacionados con los platos
+    private fun obtenerIngredientesIncorrectos(): List<String> {
         val ingredientesIncorrectos = listOf(
-            "Jamón", "Queso", "Atún", "Lentejas", "Brócoli", "Pimiento", "Yogur", "Granola", "Mantequilla", "Cereales", "Nueces", "Miel", "Chocolate", "Café", "Zumo", "Refresco"
+            "Jamón", "Queso", "Atún", "Lentejas", "Brócoli", "Pimiento", "Yogur", "Granola",
+            "Mantequilla", "Cereales", "Nueces", "Miel", "Chocolate", "Café", "Zumo", "Refresco",
+            "Pollo", "Patatas", "Cebolla", "Ajo", "Tofu", "Zanahoria", "Pasta", "Lechuga"
         )
-        val ingredientesIncorrectosFiltrados = ingredientesIncorrectos.filter { !nombresIngredientes.contains(it) }
-        nombresIngredientes.addAll(ingredientesIncorrectosFiltrados.shuffled().take(5))
-        nombresIngredientes.shuffle()
-        return nombresIngredientes
+        return ingredientesIncorrectos.shuffled().take(4)
     }
 
-    private fun onIngredienteClick(ingrediente: String, position: Int) {
+    private fun onIngredienteClick(ingrediente: String) {
         if (ingredientesSeleccionados.contains(ingrediente)) {
             ingredientesSeleccionados.remove(ingrediente)
         } else {
             ingredientesSeleccionados.add(ingrediente)
         }
+        ingredientesAdapter.notifyDataSetChanged()
     }
 
-    private fun verificarIngredientes() {
-        val ingredientesCorrectos = ingredientesReceta.map { it.nombre }
-        val ingredientesSeleccionadosAdapter = (binding.rvIngredientes.adapter as IngredientesAdapter).getSelectedItems()
-
-        if (ingredientesSeleccionadosAdapter.containsAll(ingredientesCorrectos) &&
-            ingredientesSeleccionadosAdapter.size == ingredientesCorrectos.size
-        ) {
-            Toast.makeText(
-                this,
-                "¡Correcto! Has seleccionado todos los ingredientes",
-                Toast.LENGTH_SHORT
-            ).show()
-            binding.ibFlecha.visibility = View.VISIBLE
-            btVerificar.visibility = View.GONE
-        } else {
-            Toast.makeText(this, "Incorrecto. Inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun mostrarInformacionNutricional(ingrediente: String) {
-        val ingredienteEncontrado = ingredientesReceta.find { it.nombre == ingrediente }
-        val informacion = ingredienteEncontrado?.informacionNutricional ?: obtenerInformacionNutricional(ingrediente)
-        AlertDialog.Builder(this)
-            .setTitle(ingrediente)
-            .setMessage(informacion)
-            .setPositiveButton("Aceptar", null)
-            .show()
+    fun mostrarInformacionNutricional(ingrediente: String) {
+        val informacion = obtenerInformacionNutricional(ingrediente)
+        Toast.makeText(this, "$ingrediente: $informacion", Toast.LENGTH_LONG).show()
     }
 
     private fun obtenerInformacionNutricional(ingrediente: String): String {
         return when (ingrediente) {
-            "Jamón" -> "Calorías: 145 kcal por 100g\nProteínas: 22g\nGrasas: 6g\nFuente de proteínas y vitaminas del grupo B."
-            "Queso" -> "Calorías: 350-400 kcal por 100g\nProteínas: 25g\nGrasas: 30g\nFuente de calcio y proteínas."
-            "Atún" -> "Calorías: 130 kcal por 100g\nProteínas: 29g\nGrasas: 2g\nFuente de proteínas y omega-3."
-            "Lentejas" -> "Calorías: 116 kcal por 100g\nProteínas: 9g\nCarbohidratos: 20g\nFibra: 8g\nFuente de proteínas vegetales y fibra."
-            "Brócoli" -> "Calorías: 34 kcal por 100g\nProteínas: 2.8g\nCarbohidratos: 6.6g\nFibra: 2.6g\nFuente de vitaminas C y K."
-            "Pimiento" -> "Calorías: 31 kcal por 100g\nProteínas: 1g\nCarbohidratos: 6g\nFibra: 2.1g\nFuente de vitaminas A y C."
-            "Yogur" -> "Calorías: 60 kcal por 100g\nProteínas: 3.5g\nGrasas: 3.3g\nCarbohidratos: 4.7g\nFuente de calcio y probióticos."
-            "Granola" -> "Calorías: 471 kcal por 100g\nCarbohidratos: 60g\nProteínas: 10g\nGrasas: 20g\nFibra: 8g\nFuente de fibra y energía."
-            "Mantequilla" -> "Calorías: 717 kcal por 100g\nGrasas: 81g\nFuente de grasas saturadas y vitaminas A y D."
-            "Cereales" -> "Calorías: 350-400 kcal por 100g\nCarbohidratos: 70-80g\nProteínas: 6-10g\nFibra: 5-10g\nFuente de carbohidratos y fibra."
-            "Nueces" -> "Calorías: 654 kcal por 100g\nGrasas: 65g\nProteínas: 15g\nFibra: 7g\nFuente de grasas saludables y proteínas."
-            "Miel" -> "Calorías: 304 kcal por 100g\nCarbohidratos: 82g\nFuente de azúcares naturales y antioxidantes."
-            "Chocolate" -> "Calorías: 500-600 kcal por 100g\nGrasas: 30-40g\nCarbohidratos: 50-60g\nFuente de antioxidantes y energía."
-            "Café" -> "Calorías: 2 kcal por 100ml\nCafeína: 40mg por 100ml\nFuente de cafeína y antioxidantes."
-            "Zumo" -> "Calorías: 40-50 kcal por 100ml\nCarbohidratos: 10-12g\nFuente de vitaminas y azúcares naturales."
-            "Refresco" -> "Calorías: 40-50 kcal por 100ml\nCarbohidratos: 10-12g\nFuente de azúcares añadidos."
             "Huevos" -> "Calorías: 143 kcal por 100 g\nProteínas: 13 g\nGrasas: 9.5 g\nVitaminas: A, D, E, B12\nMinerales: Hierro, zinc"
             "Leche" -> "Calorías: 42 kcal por 100 ml\nProteínas: 3.4 g\nGrasas: 1 g\nCarbohidratos: 5 g\nVitaminas: A, D, B12\nMinerales: Calcio"
             "Sal" -> "Minerales: Sodio, yodo (en sal yodada)"
@@ -164,16 +106,39 @@ class JuegoIngredientes : AppCompatActivity() {
             "Plátano" -> "Calorías: 89 kcal por 100 g\nCarbohidratos: 23 g\nProteínas: 1.1 g\nFibra: 2.6 g\nVitaminas: B6, C\nMinerales: Potasio"
             "Leche de almendras" -> "Calorías: 13 kcal por 100 ml\nGrasas: 1.1 g\nCarbohidratos: 0.2 g\nProteínas: 0.5 g\nVitaminas: E, D\nMinerales: Calcio"
             "Semillas de chía" -> "Calorías: 486 kcal por 100 g\nGrasas: 31 g\nCarbohidratos: 42 g\nProteínas: 17 g\nFibra: 34 g\nMinerales: Calcio, magnesio\nÁcidos grasos: Omega-3"
-            "Arándanos" -> "Calorías: 57 kcal por 100 g\nCarbohidratos: 14.5 g\nProteínas: 0.7 g\nFibra: 2.4 g\nVitaminas: C, K\nAntioxidantes"
-            "Pollo" -> "Calorías: 165 kcal por 100 g\nProteínas: 31 g\nGrasas: 3.6 g\nFuente de proteínas magras."
+            "Arándanos" -> "Calorías: 57 kcal por 100 g\nCarbohidratos: 14 g\nProteínas: 0.7 g\nFibra: 2.4 g\nVitaminas: C, K\nAntioxidantes: Antocianinas"
+            "Fresas" -> "Calorías: 32 kcal por 100 g\nCarbohidratos: 7.7 g\nProteínas: 0.7 g\nFibra: 2 g\nVitaminas: C\nAntioxidantes: Antocianinas"
+            "Yogur natural" -> "Calorías: 61 kcal por 100 g\nCarbohidratos: 4.7 g\nProteínas: 3.5 g\nGrasas: 3.3 g\nVitaminas: B12\nMinerales: Calcio\nProbióticos"
+            "Granola" -> "Calorías: 471 kcal por 100 g\nCarbohidratos: 60 g\nProteínas: 11 g\nGrasas: 20 g\nFibra: 7 g\nFuente de energía y fibra."
+            "Pasta" -> "Calorías: 131 kcal por 100 g (cocida)\nCarbohidratos: 25 g\nProteínas: 5 g\nGrasas: 1 g\nFuente de energía."
+            "Atún" -> "Calorías: 130 kcal por 100 g\nProteínas: 29 g\nGrasas: 2 g\nÁcidos grasos: Omega-3"
+            "Lechuga" -> "Calorías: 15 kcal por 100 g\nCarbohidratos: 2.9 g\nProteínas: 1.4 g\nFibra: 1.3 g\nVitaminas: A, K"
+            "Pollo" -> "Calorías: 165 kcal por 100 g (pechuga)\nProteínas: 31 g\nGrasas: 3.6 g\nVitaminas: B3, B6\nMinerales: Fósforo"
             "Patatas" -> "Calorías: 77 kcal por 100 g\nCarbohidratos: 17 g\nProteínas: 2 g\nFibra: 2.2 g\nVitaminas: C, B6\nMinerales: Potasio"
-            "Cebolla" -> "Calorías: 40 kcal por 100 g\nCarbohidratos: 9.3 g\nProteínas: 1.1 g\nGrasas: 0.1 g\nFibra: 1.7 g\nRica en antioxidantes y compuestos que fortalecen el sistema inmunológico."
+            "Cebolla" -> "Calorías: 40 kcal por 100 g\nCarbohidratos: 9 g\nProteínas: 1.1 g\nFibra: 1.7 g\nVitaminas: C, B6\nAntioxidantes: Quercetina"
             "Ajo" -> "Calorías: 149 kcal por 100 g\nCarbohidratos: 33 g\nProteínas: 6.4 g\nFibra: 2.1 g\nAntioxidantes: Allicina"
             "Tofu" -> "Calorías: 76 kcal por 100 g\nProteínas: 8 g\nGrasas: 4.8 g\nCarbohidratos: 1.9 g\nMinerales: Calcio, hierro"
-            "Zanahoria" -> "Calorías: 41 kcal por 100 g\nCarbohidratos: 9.6 g\nProteínas: 0.9 g\nFibra: 2.8 g\nVitaminas: A, K\nAntioxidantes: Betacaroteno"
-            "Pasta" -> "Calorías: 131 kcal por 100 g (cocida)\nCarbohidratos: 25 g\nProteínas: 5 g\nGrasas: 1 g"
-            "Lechuga" -> "Calorías: 15 kcal por 100 g\nCarbohidratos: 2.9 g\nProteínas: 1.4 g\nGrasas: 0.2 g\nFibra: 1.3 g\nBaja en calorías y buena fuente de vitaminas A y K."
-            else -> "Información nutricional no disponible."
+            "Zanahoria" -> "Calorías: 41 kcal por 100 g\nCarbohidratos: 9.6 g\nProteínas: 0.9 g\nFibra: 2.8 g\nVitaminas: A\nAntioxidantes: Betacaroteno"
+            "Brócoli" -> "Calorías: 34 kcal por 100 g\nCarbohidratos: 6.6 g\nProteínas: 2.8 g\nFibra: 2.6 g\nVitaminas: C, K"
+            "Pimiento" -> "Calorías: 31 kcal por 100 g\nCarbohidratos: 6 g\nProteínas: 1 g\nFibra: 2.1 g\nVitaminas: C, A"
+            "Salsa de soja" -> "Calorías: 53 kcal por 100 ml\nCarbohidratos: 6.6 g\nProteínas: 5.5 g\nMinerales: Sodio"
+            "Lentejas" -> "Calorías: 116 kcal por 100 g (cocidas)\nCarbohidratos: 20 g\nProteínas: 9 g\nFibra: 8 g\nMinerales: Hierro"
+            "Jamón" -> "Calorías: 145 kcal por 100 g\nProteínas: 22 g\nGrasas: 6 g\nVitaminas: B1, B3, B6"
+            "Queso" -> "Calorías: 402 kcal por 100 g\nProteínas: 25 g\nGrasas: 33 g\nVitaminas: A, D\nMinerales: Calcio"
+            "Mantequilla de maní" -> "Calorías: 588 kcal por 100 g\nProteínas: 25 g\nGrasas: 50 g\nCarbohidratos: 20 g\nFibra: 6 g\nMinerales: Magnesio, fósforo"
+            "Hummus" -> "Calorías: 166 kcal por 100 g\nProteínas: 7.9 g\nGrasas: 9.6 g\nCarbohidratos: 14.3 g\nFibra: 6 g\nMinerales: Hierro, magnesio"
+            else -> "Información no disponible"
+        }
+    }
+
+    private fun verificarIngredientes() {
+        val ingredientesCorrectosNombres = ingredientesCorrectos.map { it.nombre }
+        val sonCorrectos = ingredientesSeleccionados.sorted() == ingredientesCorrectosNombres.sorted()
+
+        if (sonCorrectos) {
+            Toast.makeText(this, "¡Correcto!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Incorrecto", Toast.LENGTH_SHORT).show()
         }
     }
 }
