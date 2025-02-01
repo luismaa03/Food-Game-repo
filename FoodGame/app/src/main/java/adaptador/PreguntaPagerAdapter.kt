@@ -3,6 +3,7 @@ package adaptador
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.foodgame.PreguntaFragment
 import modelo.Pregunta
 
 class PreguntaPagerAdapter(

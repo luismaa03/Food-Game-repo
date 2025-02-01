@@ -99,7 +99,7 @@
         android:layout_width="158dp"
         android:layout_height="72dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/material_dynamic_primary50"
+        android:backgroundTint="@color/md_theme_errorContainer_mediumContrast"
         android:text="@string/btVolver"
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -18,4 +18,11 @@
     <string name="btHistorialPuntos">Historial de Puntos</string>
     <string name="tvPuntos">Puntuación</string>
     <string name="btAcercaDe">Acerca de</string>
+    <string name="btEnviar">Enviar</string>
+    <string name="btVerificar">Verificar</string>
+    <string name="tvSeleccionarIngredientes">Selecciona los ingredientes correctos</string>
+    <string name="tvPuntuacionGeneral">Puntuación general: 0</string>
+    <string name="tvPuntuacion">Puntuación: 0</string>
+    <string name="tvPreguntasAcertadas">Preguntas acertadas: 0</string>
+    <string name="tvPreguntasFalladas">Preguntas falladas: 0</string>
 </resources>

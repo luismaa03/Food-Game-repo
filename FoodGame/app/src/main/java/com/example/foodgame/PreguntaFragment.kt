@@ -1,8 +1,12 @@
+package com.example.foodgame
+
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import com.example.foodgame.databinding.FragmentPreguntaBinding
 import modelo.Pregunta
@@ -66,6 +70,8 @@ class PreguntaFragment : Fragment() {
                         radioButton.text = respuesta
                         rgOpciones.addView(radioButton)
                     }
+                    // Llamar a aumentarTamanoLetraRadioButtons() aquí, después de añadir los RadioButton
+                    aumentarTamanoLetraRadioButtons(rgOpciones)
                 }
 
                 TipoPregunta.RESPUESTA_LIBRE -> TODO()
@@ -88,6 +94,13 @@ class PreguntaFragment : Fragment() {
 
     fun setRespuestaSeleccionadaListener(listener: RespuestaSeleccionadaListener) {
         this.listener = listener
+    }
+
+    private fun aumentarTamanoLetraRadioButtons(radioGroup: RadioGroup) {
+        for (i in 0 until radioGroup.childCount) {
+            val radioButton = radioGroup.getChildAt(i) as RadioButton
+            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f) // Tamaño de letra en sp (puedes cambiarlo)
+        }
     }
 
     override fun onDestroyView() {
