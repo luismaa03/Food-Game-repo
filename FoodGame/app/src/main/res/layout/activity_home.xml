@@ -16,10 +16,10 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btHistorialPuntos"
-        app:layout_constraintVertical_bias="0.483" />
+        app:layout_constraintVertical_bias="0.154" />
 
     <Button
         android:id="@+id/btComenzar"
@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btComenzar"
-        app:layout_constraintVertical_bias="0.179" />
+        app:layout_constraintVertical_bias="0.062" />
 
     <TextView
         android:id="@+id/tvRecetas"
@@ -76,7 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvRecetas"
-        app:layout_constraintVertical_bias="0.122"
+        app:layout_constraintVertical_bias="0.034"
         app:srcCompat="@drawable/comida" />
 
     <ImageButton
@@ -91,20 +91,33 @@
         app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.01"
         app:srcCompat="@drawable/perfil"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btAcercaDe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="164dp"
+        android:layout_height="54dp"
         android:text="@string/btAcercaDe"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.961" />
+
+    <ImageButton
+        android:id="@+id/ibMusica"
+        android:layout_width="92dp"
+        android:layout_height="99dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvRecetas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.89"
+        app:layout_constraintStart_toEndOf="@+id/ibIcono"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_musica_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
