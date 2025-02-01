@@ -3,6 +3,7 @@ package com.example.foodgame
 import adaptador.PreguntaPagerAdapter
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -20,8 +21,10 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
     private lateinit var btEnviar: Button
     private lateinit var preguntas: List<Pregunta>
     private var correctas = 0
+    private var incorrectas = 0
     private val respuestas = mutableMapOf<Int, String>()
     private lateinit var selectedPlato: Plato
+    private var startTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +50,8 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
         // Configurar el botón enviar
         btEnviar.setOnClickListener {
             onAllQuestionsAnswered()
-            val intent = Intent(this, JuegoIngredientes::class.java)
-            intent.putExtra("plato", selectedPlato) // Pasa el objeto Plato
-            startActivity(intent)
         }
+        startTime = SystemClock.elapsedRealtime()
     }
 
     override fun onRespuestaSeleccionada(respuesta: String, position: Int) {
@@ -83,23 +84,32 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
             return
         }
 
-        correctas = 0 // Reiniciar el contador de respuestas correctas
+        correctas = 0
+        incorrectas = 0
         for ((position, respuestaSeleccionada) in respuestas) {
             val pregunta = preguntas[position]
             if (respuestaSeleccionada == pregunta.respuestaCorrecta) {
-                incrementarPuntuacion()
+                correctas++
+            } else {
+                incorrectas++
             }
         }
         Toast.makeText(this, "Has acertado $correctas de ${preguntas.size}", Toast.LENGTH_SHORT).show()
     }
 
-    private fun incrementarPuntuacion() {
-        correctas++
-    }
-
     private fun onAllQuestionsAnswered() {
         if (respuestas.size == preguntas.size) {
             verificarRespuestas()
+            val endTime = SystemClock.elapsedRealtime()
+            val elapsedTime = endTime - startTime
+
+            val intent = Intent(this, JuegoIngredientes::class.java)
+            intent.putExtra("plato", selectedPlato)
+            intent.putExtra("correctas", correctas)
+            intent.putExtra("incorrectas", incorrectas)
+            intent.putExtra("tiempo", elapsedTime)
+            intent.putExtra("totalPreguntas", preguntas.size) //Pasamos totalPreguntas
+            startActivity(intent)
         }
     }
 }

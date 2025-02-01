@@ -20,6 +20,10 @@ class JuegoIngredientes : AppCompatActivity() {
     private var ingredientesCorrectos: List<Ingrediente> = emptyList()
     private var ingredientesMezclados: List<Ingrediente> = emptyList()
     private var ingredientesSeleccionados: MutableList<Ingrediente> = mutableListOf()
+    private var correctas: Int = 0
+    private var incorrectas: Int = 0
+    private var tiempo: Long = 0
+    private var totalPreguntas: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +31,10 @@ class JuegoIngredientes : AppCompatActivity() {
         setContentView(binding.root)
 
         plato = intent.getParcelableExtra("plato")!!
+        correctas = intent.getIntExtra("correctas", 0)
+        incorrectas = intent.getIntExtra("incorrectas", 0)
+        tiempo = intent.getLongExtra("tiempo", 0)
+        totalPreguntas = intent.getIntExtra("totalPreguntas", 0)
 
         ingredientesCorrectos = obtenerIngredientesCorrectos(plato)
         ingredientesMezclados = obtenerIngredientesMezclados(plato)
@@ -41,7 +49,6 @@ class JuegoIngredientes : AppCompatActivity() {
         )
 
         binding.rvIngredientes.apply {
-            // Usar GridLayoutManager con 2 columnas
             layoutManager = GridLayoutManager(this@JuegoIngredientes, 2)
             adapter = ingredientesAdapter
         }
@@ -52,15 +59,13 @@ class JuegoIngredientes : AppCompatActivity() {
     }
 
     private fun obtenerIngredientesCorrectos(plato: Plato): List<Ingrediente> {
-        // Simplemente obtenemos la lista de ingredientes sin intentar obtener URLs
         return PlatoData.getPlatoIngredientes(plato.nombre)
     }
 
     private fun obtenerIngredientesMezclados(plato: Plato): List<Ingrediente> {
         val ingredientesCorrectos = obtenerIngredientesCorrectos(plato)
         val ingredientesIncorrectos = obtenerIngredientesIncorrectos()
-        val ingredientesMezclados = (ingredientesCorrectos + ingredientesIncorrectos).shuffled()
-        return ingredientesMezclados
+        return (ingredientesCorrectos + ingredientesIncorrectos).shuffled()
     }
 
     private fun obtenerIngredientesIncorrectos(): List<Ingrediente> {
@@ -118,13 +123,24 @@ class JuegoIngredientes : AppCompatActivity() {
         val ingredientesSeleccionadosNombres = ingredientesSeleccionados.map { it.nombre }
         val sonCorrectos = ingredientesSeleccionadosNombres.sorted() == ingredientesCorrectosNombres.sorted()
 
+        val puntuacionIngredientes = if (sonCorrectos) {
+            10
+        } else {
+            0
+        }
+
         if (sonCorrectos) {
             Toast.makeText(this, "¡Correcto!", Toast.LENGTH_SHORT).show()
-            // Navegar a PuntuacionGeneral
-            val intent = Intent(this, ResultadoCuestionario::class.java)
-            startActivity(intent)
         } else {
             Toast.makeText(this, "Incorrecto", Toast.LENGTH_SHORT).show()
         }
+
+        val intent = Intent(this, ResultadoCuestionario::class.java)
+        intent.putExtra("correctas", correctas)
+        intent.putExtra("incorrectas", incorrectas)
+        intent.putExtra("tiempo", tiempo)
+        intent.putExtra("puntuacionIngredientes", puntuacionIngredientes)
+        intent.putExtra("totalPreguntas", totalPreguntas)
+        startActivity(intent)
     }
 }
