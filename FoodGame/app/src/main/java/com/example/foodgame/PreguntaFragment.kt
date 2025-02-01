@@ -1,5 +1,3 @@
-package com.example.foodgame
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -58,26 +56,19 @@ class PreguntaFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            tvPregunta.text = pregunta.pregunta
+            tvPregunta.text = pregunta.texto // Cambiado a pregunta.texto
             rgOpciones.removeAllViews() // Limpiar RadioGroup
 
             when (pregunta.tipo) {
                 TipoPregunta.OPCION_MULTIPLE -> {
-                    pregunta.respuestas.forEach { respuesta ->
+                    pregunta.opciones.forEach { respuesta -> // Cambiado a pregunta.opciones
                         val radioButton = RadioButton(context)
                         radioButton.text = respuesta
                         rgOpciones.addView(radioButton)
                     }
                 }
-                TipoPregunta.VERDADERO_FALSO -> {
-                    val rbVerdadero = RadioButton(context)
-                    rbVerdadero.text = "Verdadero"
-                    rgOpciones.addView(rbVerdadero)
 
-                    val rbFalso = RadioButton(context)
-                    rbFalso.text = "Falso"
-                    rgOpciones.addView(rbFalso)
-                }
+                TipoPregunta.RESPUESTA_LIBRE -> TODO()
             }
             rgOpciones.setOnCheckedChangeListener { _, checkedId ->
                 if (checkedId == -1) {

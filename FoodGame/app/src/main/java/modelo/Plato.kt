@@ -2,31 +2,36 @@ package modelo
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.foodgame.R
+
 
 data class Plato(
     val nombre: String,
     val calorias: Double,
-    val ingredientes: String,
+    val ingredientes: List<Ingrediente>, // Cambiado a List<Ingrediente>
     val imageName: String,
-    val descripcion: String,
-    var preguntas: List<Pregunta> = emptyList()
+    val preparacion: String,
+    val preguntas: List<Pregunta> = emptyList(),
+    val imagen: Int = R.drawable.placeholder
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readDouble(),
+        parcel.createTypedArrayList(Ingrediente) ?: emptyList(), // Leer List<Ingrediente>
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.createTypedArrayList(Pregunta) ?: emptyList()
+        parcel.createTypedArrayList(Pregunta) ?: emptyList(),
+        parcel.readInt()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(nombre)
         parcel.writeDouble(calorias)
-        parcel.writeString(ingredientes)
+        parcel.writeTypedList(ingredientes) // Escribir List<Ingrediente>
         parcel.writeString(imageName)
-        parcel.writeString(descripcion)
+        parcel.writeString(preparacion)
         parcel.writeTypedList(preguntas)
+        parcel.writeInt(imagen)
     }
 
     override fun describeContents(): Int {

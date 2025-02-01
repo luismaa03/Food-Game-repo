@@ -21,14 +21,15 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
     private lateinit var preguntas: List<Pregunta>
     private var correctas = 0
     private val respuestas = mutableMapOf<Int, String>()
+    private lateinit var selectedPlato: Plato
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJuegoCuestionarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val selectedPlato = intent.getParcelableExtra<Plato>("selectedPlato")
-        preguntas = selectedPlato?.preguntas ?: emptyList()
+        selectedPlato = intent.getParcelableExtra("selectedPlato")!!
+        preguntas = selectedPlato.preguntas
         Toast.makeText(this, "Número de preguntas: ${preguntas.size}", Toast.LENGTH_SHORT).show()
 
         // Inicializar ViewPager2 y botón Enviar
@@ -90,7 +91,6 @@ class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSelecci
             }
         }
         Toast.makeText(this, "Has acertado $correctas de ${preguntas.size}", Toast.LENGTH_SHORT).show()
-        finish()
     }
 
     private fun incrementarPuntuacion() {
