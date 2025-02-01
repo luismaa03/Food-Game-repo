@@ -5,6 +5,7 @@
     <color name="fVerde">#4CAF50</color>
     <color name="tAzul">#58ECFF</color>
     <color name="fAmarillo">#CDDC39</color>
+    <color name="pMorado">#7E2894</color>
     <color name="item_seleccionado">#BFFF72</color>
     <color name="item_no_seleccionado">#FFFFFF</color>
     <color name="ingrediente_seleccionado">#DEE6CD</color>

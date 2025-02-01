@@ -10,7 +10,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,9 +26,11 @@
 
     <Button
         android:id="@+id/btEnviar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enviar"
+        android:layout_width="125dp"
+        android:layout_height="57dp"
+        android:backgroundTint="@color/fVerde"
+        android:text="@string/btEnviar"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

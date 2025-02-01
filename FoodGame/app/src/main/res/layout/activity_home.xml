@@ -38,7 +38,7 @@
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="216dp"
         android:layout_height="76dp"
-        android:backgroundTint="@color/material_dynamic_primary30"
+        android:backgroundTint="@color/pMorado"
         android:text="@string/btHistorialPuntos"
         android:textColor="@color/ic_google_background"
         android:textSize="20sp"
