@@ -1,15 +1,16 @@
 package modelo
 
+
 object PlatoData {
     private val platosDesayunos = mutableListOf(
         Plato(
             "Tortilla francesa",
             200.0,
             listOf(
-                Ingrediente("Huevos", "2", "Proteínas, vitaminas A, D, E y B12"),
-                Ingrediente("Leche", "50ml", "Calcio, proteínas, vitaminas A y D"),
-                Ingrediente("Sal", "al gusto", "Sodio"),
-                Ingrediente("Pimienta", "al gusto", "Antioxidantes")
+                Ingrediente("Huevos", "2", "Proteínas, vitaminas A, D, E y B12", "huevos"),
+                Ingrediente("Leche", "50ml", "Calcio, proteínas, vitaminas A y D", "leche"),
+                Ingrediente("Sal", "al gusto", "Sodio", "sal"),
+                Ingrediente("Pimienta", "al gusto", "Antioxidantes", "pimienta")
             ),
             "tortilla_francesa",
             "1. Batir los huevos con la leche, sal y pimienta.\n2. Calentar una sartén con aceite.\n3. Verter la mezcla de huevos en la sartén.\n4. Cocinar a fuego medio hasta que la tortilla esté cuajada.\n5. Doblar la tortilla por la mitad y servir.",
@@ -38,10 +39,10 @@ object PlatoData {
             "Tostadas con aguacate",
             150.0,
             listOf(
-                Ingrediente("Pan", "2 rebanadas", "Carbohidratos, fibra"),
-                Ingrediente("Aguacate", "1/2", "Grasas saludables, vitaminas C, E, K y B6"),
-                Ingrediente("Tomate", "1/2", "Vitaminas C y K, antioxidantes"),
-                Ingrediente("Aceite de oliva", "al gusto", "Grasas monoinsaturadas, antioxidantes")
+                Ingrediente("Pan", "2 rebanadas", "Carbohidratos, fibra","pan"),
+                Ingrediente("Aguacate", "1/2", "Grasas saludables, vitaminas C, E, K y B6","aguacate"),
+                Ingrediente("Tomate", "1/2", "Vitaminas C y K, antioxidantes","tomate"),
+                Ingrediente("Aceite de oliva", "al gusto", "Grasas monoinsaturadas, antioxidantes","aceiteoliva")
             ),
             "tostada_aguacate",
             "1. Tostar el pan.\n2. Machacar el aguacate con un tenedor.\n3. Untar el aguacate sobre el pan tostado.\n4. Cortar el tomate en rodajas y colocarlas sobre el aguacate.\n5. Añadir un chorrito de aceite de oliva y servir.",
@@ -70,10 +71,10 @@ object PlatoData {
             "Batido verde",
             180.0,
             listOf(
-                Ingrediente("Espinacas", "50g", "Vitaminas A, C y K, hierro"),
-                Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C"),
-                Ingrediente("Leche de almendras", "200ml", "Vitaminas E y D, calcio"),
-                Ingrediente("Semillas de chía", "1 cucharada", "Fibra, omega-3, calcio")
+                Ingrediente("Espinacas", "50g", "Vitaminas A, C y K, hierro", "espinacas"),
+                Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C", "platano"),
+                Ingrediente("Leche de almendras", "200ml", "Vitaminas E y D, calcio", "leche_almendras"),
+                Ingrediente("Semillas de chía", "1 cucharada", "Fibra, omega-3, calcio", "semillas")
             ),
             "batido_verde",
             "1. Lavar las espinacas.\n2. Pelar y cortar el plátano.\n3. Colocar las espinacas, el plátano, la leche de almendras y las semillas de chía en una licuadora.\n4. Batir hasta obtener una mezcla homogénea.\n5. Servir frío.",
@@ -102,10 +103,10 @@ object PlatoData {
             "Yogur con frutas y granola",
             220.0,
             listOf(
-                Ingrediente("Yogur natural", "150g", "Proteínas, calcio, probióticos"),
-                Ingrediente("Fresas", "50g", "Vitamina C, antioxidantes"),
-                Ingrediente("Arándanos", "30g", "Antioxidantes, vitaminas C y K"),
-                Ingrediente("Granola", "2 cucharadas", "Fibra, carbohidratos")
+                Ingrediente("Yogur natural", "150g", "Proteínas, calcio, probióticos", "yogur"),
+                Ingrediente("Fresas", "50g", "Vitamina C, antioxidantes", "fresas"),
+                Ingrediente("Arándanos", "30g", "Antioxidantes, vitaminas C y K", "arandanos"),
+                Ingrediente("Granola", "2 cucharadas", "Fibra, carbohidratos", "granola")
             ),
             "yogurt_granola",
             "1. Lavar las fresas y los arándanos.\n2. Cortar las fresas en trozos pequeños.\n3. Colocar el yogur en un bol.\n4. Añadir las fresas y los arándanos.\n5. Espolvorear la granola por encima y servir.",
@@ -137,11 +138,11 @@ object PlatoData {
             "Ensalada de pasta",
             350.0,
             listOf(
-                Ingrediente("Pasta", "100g", "Carbohidratos"),
-                Ingrediente("Tomate", "1", "Vitaminas C y K, antioxidantes"),
-                Ingrediente("Lechuga", "50g", "Vitaminas A y K, fibra"),
-                Ingrediente("Atún", "80g", "Proteínas, omega-3"),
-                Ingrediente("Aceite de oliva", "al gusto", "Grasas monoinsaturadas, antioxidantes")
+                Ingrediente("Pasta", "100g", "Carbohidratos", "pasta"),
+                Ingrediente("Tomate", "1", "Vitaminas C y K, antioxidantes", "tomate"),
+                Ingrediente("Lechuga", "50g", "Vitaminas A y K, fibra", "lechuga"),
+                Ingrediente("Atún", "80g", "Proteínas, omega-3", "atun"),
+                Ingrediente("Aceite de oliva", "al gusto", "Grasas monoinsaturadas, antioxidantes", "aceite_oliva")
             ),
             "ensalada_pasta",
             "1. Cocer la pasta según las instrucciones del paquete.\n2. Lavar y cortar el tomate y la lechuga.\n3. Escurrir el atún.\n4. Mezclar la pasta, el tomate, la lechuga y el atún en un bol.\n5. Aliñar con aceite de oliva y servir.",
@@ -170,10 +171,10 @@ object PlatoData {
             "Pollo asado con patatas",
             450.0,
             listOf(
-                Ingrediente("Pollo", "1 pechuga", "Proteínas, vitaminas del grupo B"),
-                Ingrediente("Patatas", "2", "Carbohidratos, potasio, vitamina C"),
-                Ingrediente("Cebolla", "1/2", "Antioxidantes, vitaminas C y B6"),
-                Ingrediente("Ajo", "2 dientes", "Antioxidantes, compuestos sulfurados"),
+                Ingrediente("Pollo", "1 pechuga", "Proteínas, vitaminas del grupo B","pollo"),
+                Ingrediente("Patatas", "2", "Carbohidratos, potasio, vitamina C", "patatas"),
+                Ingrediente("Cebolla", "1/2", "Antioxidantes, vitaminas C y B6","cebolla"),
+                Ingrediente("Ajo", "2 dientes", "Antioxidantes", "ajo"),
                 Ingrediente("Especias", "al gusto", "Antioxidantes, según la especie")
             ),
             "pollo_patatas",
@@ -203,11 +204,11 @@ object PlatoData {
             "Salteado de verduras con tofu",
             320.0,
             listOf(
-                Ingrediente("Tofu", "200g", "Proteínas, calcio, hierro"),
-                Ingrediente("Zanahoria", "1", "Vitamina A, fibra"),
-                Ingrediente("Brócoli", "100g", "Vitaminas C y K, fibra"),
-                Ingrediente("Pimiento", "1/2", "Vitaminas C y A, antioxidantes"),
-                Ingrediente("Salsa de soja", "al gusto", "Sodio")
+                Ingrediente("Tofu", "200g", "Proteínas, calcio, hierro", "tofu"),
+                Ingrediente("Zanahoria", "1", "Vitamina A, fibra", "zanahoria"),
+                Ingrediente("Brócoli", "100g", "Vitaminas C y K, fibra", "brocoli"),
+                Ingrediente("Pimiento", "1/2", "Vitaminas C y A, antioxidantes", "pimiento"),
+                Ingrediente("Salsa de soja", "al gusto", "Sodio", "salsa_soja")
             ),
             "salteado_verduras",
             "1. Cortar el tofu en cubos y dorarlo en una sartén con aceite.\n2. Lavar y cortar la zanahoria, el brócoli y el pimiento en trozos pequeños.\n3. Saltear las verduras en la sartén hasta que estén tiernas pero crujientes.\n4. Añadir el tofu y un chorrito de salsa de soja.\n5. Cocinar por unos minutos más y servir caliente.",
@@ -236,12 +237,12 @@ object PlatoData {
             "Lentejas estofadas",
             400.0,
             listOf(
-                Ingrediente("Lentejas", "150g", "Proteínas, hierro, fibra"),
-                Ingrediente("Zanahoria", "1", "Vitamina A, fibra"),
-                Ingrediente("Patata", "1", "Carbohidratos, potasio, vitamina C"),
-                Ingrediente("Cebolla", "1/2", "Antioxidantes, vitaminas C y B6"),
-                Ingrediente("Ajo", "2 dientes", "Antioxidantes, compuestos sulfurados"),
-                Ingrediente("Especias", "al gusto", "Antioxidantes, según la especia")
+                Ingrediente("Lentejas", "150g", "Proteínas, hierro, fibra", "lentejas"),
+                Ingrediente("Zanahoria", "1", "Vitamina A, fibra", "zanahoria"),
+                Ingrediente("Patata", "1", "Carbohidratos, potasio, vitamina C", "patatas"),
+                Ingrediente("Cebolla", "1/2", "Antioxidantes, vitaminas C y B6", "cebolla"),
+                Ingrediente("Ajo", "2 dientes", "Antioxidantes, compuestos sulfurados", "ajo"),
+                Ingrediente("Especias", "al gusto", "Antioxidantes, según la especia","especias")
             ),
             "lentejas_estofadas",
             "1. Lavar las lentejas.\n2. Pelar y cortar la zanahoria, la patata y la cebolla en trozos pequeños.\n3. Picar el ajo.\n4. Cocinar todos los ingredientes en una olla con agua y especias al gusto hasta que las lentejas estén tiernas.\n5. Servir caliente.",
@@ -273,9 +274,9 @@ object PlatoData {
             "Smoothie de frutas",
             150.0,
             listOf(
-                Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C"),
-                Ingrediente("Fresas", "100g", "Vitamina C, antioxidantes"),
-                Ingrediente("Leche de almendras", "150ml", "Vitaminas E y D, calcio")
+            Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C", "platano"),
+                Ingrediente("Fresas", "100g", "Vitamina C, antioxidantes", "fresas"),
+                Ingrediente("Leche de almendras", "150ml", "Vitaminas E y D, calcio", "leche_almendras")
             ),
             "smoothie",
             "1. Pelar y cortar el plátano.\n2. Lavar y cortar las fresas.\n3. Colocar el plátano, las fresas y la leche de almendras en una licuadora.\n4. Licuar hasta obtener una mezcla suave.\n5. Servir frío.",
@@ -304,11 +305,11 @@ object PlatoData {
             "Sándwich de jamón y queso",
             250.0,
             listOf(
-                Ingrediente("Pan", "2 rebanadas", "Carbohidratos, fibra"),
-                Ingrediente("Jamón", "50g", "Proteínas, vitaminas del grupo B"),
-                Ingrediente("Queso", "50g", "Proteínas, calcio, vitaminas A y D"),
-                Ingrediente("Tomate", "1/2", "Vitaminas C y K, antioxidantes"),
-                Ingrediente("Lechuga", "al gusto", "Vitaminas A y K, fibra")
+                Ingrediente("Pan", "2 rebanadas", "Carbohidratos, fibra", "pan"),
+                Ingrediente("Jamón", "50g", "Proteínas, vitaminas del grupo B", "jamon"),
+                Ingrediente("Queso", "50g", "Proteínas, calcio, vitaminas A y D", "queso"),
+                Ingrediente("Tomate", "1/2", "Vitaminas C y K, antioxidantes", "tomate"),
+                Ingrediente("Lechuga", "al gusto", "Vitaminas A y K, fibra", "lechuga")
             ),
             "sandwich",
             "1. Tostar el pan (opcional).\n2. Colocar el jamón y el queso sobre una rebanada de pan.\n3. Lavar y cortar el tomate y la lechuga.\n4. Añadir el tomate y la lechuga sobre el jamón y el queso.\n5. Cubrir con la otra rebanada de pan.\n6. Servir.",
@@ -337,8 +338,8 @@ object PlatoData {
             "Hummus con palitos de zanahoria",
             180.0,
             listOf(
-                Ingrediente("Hummus", "100g", "Proteínas, fibra, hierro"),
-                Ingrediente("Zanahorias", "2", "Vitamina A, fibra")
+                Ingrediente("Hummus", "100g", "Proteínas, fibra, hierro", "hummus"),
+                Ingrediente("Zanahorias", "2", "Vitamina A, fibra", "zanahoria"),
             ),
             "hummus",
             "1. Lavar y pelar las zanahorias.\n2. Cortar las zanahorias en palitos.\n3. Colocar el hummus en un bol pequeño.\n4. Servir los palitos de zanahoria junto con el hummus.",
@@ -366,9 +367,9 @@ object PlatoData {
             "Tostadas de mantequilla de maní y plátano",
             200.0,
             listOf(
-                Ingrediente("Pan integral", "2 rebanadas", "Carbohidratos, fibra"),
-                Ingrediente("Mantequilla de maní", "2 cucharadas", "Proteínas, grasas saludables"),
-                Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C")
+                Ingrediente("Pan integral", "2 rebanadas", "Carbohidratos, fibra", "pan_integral"),
+                Ingrediente("Mantequilla de maní", "2 cucharadas", "Proteínas, grasas saludables", "mantequilla"),
+                Ingrediente("Plátano", "1", "Potasio, vitaminas B6 y C", "platano")
             ),
             "tostadas_platano",
             "1. Tostar el pan integral.\n2. Untar una capa de mantequilla de maní sobre las tostadas.\n3. Cortar el plátano en rodajas finas.\n4. Colocar las rodajas de plátano sobre las tostadas.\n5. Servir.",

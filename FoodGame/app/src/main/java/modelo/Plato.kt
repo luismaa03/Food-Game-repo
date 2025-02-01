@@ -8,7 +8,7 @@ import com.example.foodgame.R
 data class Plato(
     val nombre: String,
     val calorias: Double,
-    val ingredientes: List<Ingrediente>, // Cambiado a List<Ingrediente>
+    val ingredientes: List<Ingrediente>,
     val imageName: String,
     val preparacion: String,
     val preguntas: List<Pregunta> = emptyList(),
@@ -17,7 +17,7 @@ data class Plato(
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readDouble(),
-        parcel.createTypedArrayList(Ingrediente) ?: emptyList(), // Leer List<Ingrediente>
+        parcel.createTypedArrayList(Ingrediente) ?: emptyList(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.createTypedArrayList(Pregunta) ?: emptyList(),
@@ -27,7 +27,7 @@ data class Plato(
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(nombre)
         parcel.writeDouble(calorias)
-        parcel.writeTypedList(ingredientes) // Escribir List<Ingrediente>
+        parcel.writeTypedList(ingredientes)
         parcel.writeString(imageName)
         parcel.writeString(preparacion)
         parcel.writeTypedList(preguntas)
