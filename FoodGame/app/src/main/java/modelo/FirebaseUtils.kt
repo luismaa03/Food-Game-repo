@@ -1,4 +1,4 @@
-package com.example.foodgame
+package modelo
 
 import android.util.Log
 import android.widget.ImageView
