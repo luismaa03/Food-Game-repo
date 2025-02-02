@@ -28,16 +28,15 @@ class ResultadoCuestionario : AppCompatActivity() {
 
         // Calcular puntuación general
         val puntuacionGeneral = if (tiempo > 0) {
-            (puntuacionTotal * 1000000 / tiempo).toInt() // Ejemplo: puntuación por cada 10 segundos
+            (puntuacionTotal * 1000000 / tiempo).toInt()
         } else {
-            0 // Evitar división por cero
+            0
         }
 
         // Mostrar resultados
-        binding.tvPuntuacion.text = "Puntuación: $puntuacionTotal"
+        binding.tvPuntuacion.text = "Puntuación General: $puntuacionGeneral"
         binding.tvPreguntasAcertadas.text = "Preguntas acertadas: $correctas"
         binding.tvPreguntasFalladas.text = "Preguntas falladas: $incorrectas"
-        binding.tvPuntuacionGeneral.text = "Puntuación general: $puntuacionGeneral"
 
         // Guardar puntuación en Firebase
         Conexion.addPuntuacion(this, Puntuacion(puntos = puntuacionGeneral))
