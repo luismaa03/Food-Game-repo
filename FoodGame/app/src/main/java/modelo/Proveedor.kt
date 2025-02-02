@@ -1,4 +1,4 @@
-package com.example.foodgame
+package modelo
 
 enum class Proveedor {
     BASIC,

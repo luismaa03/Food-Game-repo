@@ -1,7 +1,6 @@
 package com.example.foodgame
 
 import android.os.Bundle
-import com.example.foodgame.databinding.ActivityAlmuerzosBinding
 import modelo.PlatoData
 
 class Almuerzos : PlatosActivity() {

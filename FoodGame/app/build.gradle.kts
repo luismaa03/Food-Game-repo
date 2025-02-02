@@ -57,21 +57,14 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
-
-
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    implementation("com.google.firebase:firebase-bom:33.6.0")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
-
     implementation("com.google.firebase:firebase-firestore-ktx:24.10.0")
     implementation("com.google.code.gson:gson:2.10.1")
-
     implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
     implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
-
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
-
     implementation("com.squareup.picasso:picasso:2.8")
 }
