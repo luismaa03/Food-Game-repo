@@ -36,12 +36,15 @@ class DetalleRecetas : AppCompatActivity() {
 
         // Muestra los detalles del plato
         if (selectedPlato != null) {
+            val ingredientesText = selectedPlato.ingredientes.joinToString("\n") { ingrediente -> // Especificamos el tipo "ingrediente"
+                "- ${ingrediente.nombre}: ${ingrediente.cantidad}"
+            }
             val platoDetails = """
             Nombre: ${selectedPlato.nombre}
             Calorías: ${selectedPlato.calorias}
-            Ingredientes: ${selectedPlato.ingredientes}
-            Pasos de preparación:
-            ${selectedPlato.descripcion}
+            Ingredientes:
+            $ingredientesText
+            Pasos de preparación: ${selectedPlato.preparacion}
             """.trimIndent()
             binding.mlRecetas.text = platoDetails
 

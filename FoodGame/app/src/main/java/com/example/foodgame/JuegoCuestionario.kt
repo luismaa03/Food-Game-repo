@@ -1,6 +1,12 @@
 package com.example.foodgame
 
+import adaptador.PreguntaPagerAdapter
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -8,37 +14,102 @@ import com.example.foodgame.databinding.ActivityJuegoCuestionarioBinding
 import modelo.Plato
 import modelo.Pregunta
 
-class JuegoCuestionario : AppCompatActivity() {
+class JuegoCuestionario : AppCompatActivity(), PreguntaFragment.RespuestaSeleccionadaListener {
 
     private lateinit var binding: ActivityJuegoCuestionarioBinding
-    private var preguntas: MutableList<Pregunta> = mutableListOf()
     private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: PreguntaPagerAdapter
+    private lateinit var btEnviar: Button
+    private lateinit var preguntas: List<Pregunta>
+    private var correctas = 0
+    private var incorrectas = 0
+    private val respuestas = mutableMapOf<Int, String>()
+    private lateinit var selectedPlato: Plato
+    private var startTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityJuegoCuestionarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        selectedPlato = intent.getParcelableExtra("selectedPlato")!!
+        preguntas = selectedPlato.preguntas
+        Toast.makeText(this, "Número de preguntas: ${preguntas.size}", Toast.LENGTH_SHORT).show()
+
+        // Inicializar ViewPager2 y botón Enviar
         viewPager = binding.viewPager
+        btEnviar = binding.btEnviar
 
-        // Obtener el plato seleccionado
-        val selectedPlato = intent.getParcelableExtra<Plato>("selectedPlato")
+        // El botón siempre es visible, pero empieza deshabilitado
+        btEnviar.isEnabled = false
+        btEnviar.visibility = View.VISIBLE
 
-        if (selectedPlato != null) {
-            // Usar las preguntas del plato
-            preguntas.addAll(selectedPlato.preguntas)
+        // Configurar ViewPager2 y su adaptador
+        viewPager.adapter = PreguntaPagerAdapter(this, preguntas, this)
+        viewPager.offscreenPageLimit = preguntas.size // Evita que se destruyan los fragmentos
 
-            if (preguntas.isEmpty()) {
-                Toast.makeText(this, "No hay preguntas para este plato", Toast.LENGTH_SHORT).show()
-                finish()
-            } else {
-                adapter = PreguntaPagerAdapter(this, preguntas)
-                viewPager.adapter = adapter
-            }
+        // Configurar el botón enviar
+        btEnviar.setOnClickListener {
+            onAllQuestionsAnswered()
+        }
+        startTime = SystemClock.elapsedRealtime()
+    }
+
+    override fun onRespuestaSeleccionada(respuesta: String, position: Int) {
+        Log.d("JuegoCuestionario", "Respuesta seleccionada en posición: $position - $respuesta")
+
+        // Guardar o eliminar la respuesta
+        if (respuesta.isNotEmpty()) {
+            respuestas[position] = respuesta
         } else {
-            Toast.makeText(this, "No se ha seleccionado ningún plato", Toast.LENGTH_SHORT).show()
-            finish()
+            respuestas.remove(position)
+        }
+
+        Log.d("JuegoCuestionario", "Total de respuestas registradas: ${respuestas.size} de ${preguntas.size}")
+
+        // Verificar si todas las preguntas han sido respondidas
+        actualizarBotonEnviar()
+    }
+
+    private fun actualizarBotonEnviar() {
+        runOnUiThread {
+            val todasRespondidas = respuestas.size == preguntas.size
+            btEnviar.isEnabled = todasRespondidas
+            Log.d("JuegoCuestionario", "Botón enviar habilitado: ${btEnviar.isEnabled}")
+        }
+    }
+
+    private fun verificarRespuestas() {
+        if (respuestas.size != preguntas.size) {
+            Toast.makeText(this, "Debes responder a todas las preguntas", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        correctas = 0
+        incorrectas = 0
+        for ((position, respuestaSeleccionada) in respuestas) {
+            val pregunta = preguntas[position]
+            if (respuestaSeleccionada == pregunta.respuestaCorrecta) {
+                correctas++
+            } else {
+                incorrectas++
+            }
+        }
+        Toast.makeText(this, "Has acertado $correctas de ${preguntas.size}", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onAllQuestionsAnswered() {
+        if (respuestas.size == preguntas.size) {
+            verificarRespuestas()
+            val endTime = SystemClock.elapsedRealtime()
+            val elapsedTime = endTime - startTime
+
+            val intent = Intent(this, JuegoIngredientes::class.java)
+            intent.putExtra("plato", selectedPlato)
+            intent.putExtra("correctas", correctas)
+            intent.putExtra("incorrectas", incorrectas)
+            intent.putExtra("tiempo", elapsedTime)
+            intent.putExtra("totalPreguntas", preguntas.size) //Pasamos totalPreguntas
+            startActivity(intent)
         }
     }
 }

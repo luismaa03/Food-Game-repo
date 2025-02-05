@@ -143,6 +143,12 @@ class Home : AppCompatActivity() {
         }
         cargarImagenDePerfil()
 
+        binding.ibMusica.setOnClickListener {
+            Log.d(TAG, "ibMusica pulsado") // Añade este log
+            val intent = Intent(this, AudioActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     // Registro para abrir la cámara

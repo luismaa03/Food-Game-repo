@@ -1,8 +1,6 @@
 package com.example.foodgame
 
 import android.os.Bundle
-import com.example.foodgame.PlatosActivity
-import com.example.foodgame.R
 import modelo.PlatoData
 
 

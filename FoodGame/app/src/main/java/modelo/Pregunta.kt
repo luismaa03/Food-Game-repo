@@ -5,25 +5,25 @@ import android.os.Parcelable
 
 enum class TipoPregunta {
     OPCION_MULTIPLE,
-    VERDADERO_FALSO
+    RESPUESTA_LIBRE
 }
 
 data class Pregunta(
-    val pregunta: String = "",
-    val respuestas: List<String> = emptyList(),
-    val respuestaCorrecta: String = "",
-    val tipo: TipoPregunta = TipoPregunta.OPCION_MULTIPLE
+    val texto: String,
+    val opciones: List<String>,
+    val respuestaCorrecta: String,
+    val tipo: TipoPregunta
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.createStringArrayList() ?: emptyList(),
         parcel.readString() ?: "",
-        TipoPregunta.valueOf(parcel.readString() ?: TipoPregunta.OPCION_MULTIPLE.name)
+        TipoPregunta.valueOf(parcel.readString() ?: "OPCION_MULTIPLE")
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(pregunta)
-        parcel.writeStringList(respuestas)
+        parcel.writeString(texto)
+        parcel.writeStringList(opciones)
         parcel.writeString(respuestaCorrecta)
         parcel.writeString(tipo.name)
     }

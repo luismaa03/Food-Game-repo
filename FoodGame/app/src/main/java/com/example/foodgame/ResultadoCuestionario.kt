@@ -1,42 +1,47 @@
 package com.example.foodgame
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foodgame.databinding.ActivityResultadoCuestionarioBinding
 import modelo.Puntuacion
 import auxiliar.Conexion
-import android.content.Intent
 
 class ResultadoCuestionario : AppCompatActivity() {
 
     private lateinit var binding: ActivityResultadoCuestionarioBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultadoCuestionarioBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val puntuacion = intent.getIntExtra("puntuacion", 0)
+        // Recibir datos del Intent
+        val correctas = intent.getIntExtra("correctas", 0)
+        val incorrectas = intent.getIntExtra("incorrectas", 0)
+        val tiempo = intent.getLongExtra("tiempo", 0)
+        val puntuacionIngredientes = intent.getIntExtra("puntuacionIngredientes", 0)
         val totalPreguntas = intent.getIntExtra("totalPreguntas", 0)
 
-        val tiempoTranscurrido = intent.getLongExtra("tiempoTranscurrido", 0)
+        // Calcular puntuación total
+        val puntuacionTotal = correctas + puntuacionIngredientes
 
-        val preguntasFalladas = totalPreguntas - puntuacion
-
-        binding.tvPuntuacion.text = "Puntuación: $puntuacion"
-        binding.tvPreguntasAcertadas.text = "Preguntas acertadas: $puntuacion"
-        binding.tvPreguntasFalladas.text = "Preguntas falladas: $preguntasFalladas"
-
-        // Calcular y mostrar la puntuación general
-        val puntuacionGeneral = if (tiempoTranscurrido > 0) {
-            (puntuacion * 1000000 / tiempoTranscurrido).toInt() // Ejemplo: puntuación por cada 10 segundos
+        // Calcular puntuación general
+        val puntuacionGeneral = if (tiempo > 0) {
+            (puntuacionTotal * 1000000 / tiempo).toInt()
         } else {
-            0 // Evitar división por cero
+            0
         }
-        binding.tvPuntuacionGeneral.text = "Puntuación general: $puntuacionGeneral"
+
+        // Mostrar resultados
+        binding.tvPuntuacion.text = "Puntuación General: $puntuacionGeneral"
+        binding.tvPreguntasAcertadas.text = "Preguntas acertadas: $correctas"
+        binding.tvPreguntasFalladas.text = "Preguntas falladas: $incorrectas"
+
+        // Guardar puntuación en Firebase
         Conexion.addPuntuacion(this, Puntuacion(puntos = puntuacionGeneral))
 
+        // Configurar el botón de inicio
         binding.ibInicio.setOnClickListener {
             val intent = Intent(this, Home::class.java)
             startActivity(intent)

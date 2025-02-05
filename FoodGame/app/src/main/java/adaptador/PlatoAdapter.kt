@@ -120,11 +120,6 @@ class PlatoAdapter(
         return platos.size
     }
 
-    // Obtiene los índices de los elementos seleccionados
-    private fun getSelectedItems(): List<Int> {
-        return selectedItems.toList()
-    }
-
     // Configura el listener para manejar cambios en la selección
     fun setOnItemSelectedListener(listener: (Int) -> Unit) {
         onItemSelectedListener = listener
